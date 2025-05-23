@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+<div class="bg-pattern h-screen w-screen flex items-center justify-center relative">
+    <!-- Card Login -->
+    <div class="card card-side mx-8 bg-base-100 w-96 shadow-sm noto-sans">
+        <div class="card bg-base-100 shadow-sm flex flex-col w-126 justify-center items-center">
+            <p class="font-bold">Olá!</p>
+            <p class="font-bold">¡Hola!</p>
+            <p class="font-bold">Hello!</p>
+            <p class="font-bold">こんにちは!</p>
+            <p class="font-bold">안녕하세요!</p>
+        </div>
+        <div class="card-body p-8 inline-flex">
+            <p><span class="font-bold">SmallTalk</span> is a nice social network designed to be fun and <span data-tip="create account" class="tooltip"><a href="#" class="underline">easy to use</a></span>, to help you connect with people around the world. Login <span class="font-bold"></span><span class="font-bold"><a href="#" class="text-cyan-700">here</a></span>.</p>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="absolute bottom-5 w-screen flex justify-center gap-2 text-white text-sm">
+        <p class="">© {% now "Y" %}, SmallTalk.</p>
+        <p class="">All rights reserved</p>
+    </div>
+</div>
+{% endblock content %}
