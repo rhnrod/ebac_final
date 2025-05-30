@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block content %}
+  <div class="flex justify-between h-11/12">
+    <!-- Sidebar -->
+    {% include 'partials/_leftbar.html' %}
+    <!-- Main Feed -->
+    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4">
+      <div class="card bg-base-100 relative rounded-md border-none outline-none bg-[#282828] p-2 h-36">
+        <textarea maxlength="150" rows="4" class="w-full bg-transparent resize-none outline-none border-none" placeholder="Compartilhe uma ideia..."></textarea>
+        <div class="bg-zinc-600 absolute w-full bottom-0 left-0 p-2 flex justify-between">
+          <div class="flex gap-2">
+            <a href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-camera">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
+                <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+              </svg>
+            </a>
+            <a href="#"><p>Mais</p></a>
+          </div>
+          <div class="flex gap-4 items-center">
+            <p class="text-xs">Caracters restantes: 150</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-location">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      {% include 'partials/_post.html' %}
+    </main>
+
+    <!-- Right Sidebar -->
+    {% include 'partials/_rightbar.html' %}
+  </div>
+{% endblock %}
