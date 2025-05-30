@@ -1,22 +1,97 @@
 {% load static %}
 
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html id="html-root">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>SmallTalk | {% block title %}{% endblock title %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+    <script src="{% static 'js/util.js' %}"></script>
+    <script src="{% static 'js/checkPlatform.js' %}"></script>
+    <title>
+      SmallTalk |{% block title %}
+
+      {% endblock %}
+    </title>
   </head>
   <body>
     <div class="@container">
-      {% block content %}
-      {% endblock content %}
+      <div class="bg-zinc-900 text-white noto-sans h-screen">
+        {% if not hide_header %}
+          <header class="p-1 flex h-1/12 items-center justify-between border-b-1 border-zinc-700">
+            <a href="{% url 'dashboard' %}">
+              <h1 class="text-xl font-bold w-60 ml-4">
+                SmallTalk
+                <span class="animate-ping">_</span>
+              </h1>
+            </a>
+            <label class="input bg-transparent flex-1 outline-0 border-none shadow-none focus-within:outline-0">
+              <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </g>
+              </svg>
+              <div class="relative flex grow">
+                <input id="search-input" oninput="toggleClearButton()" type="search" class="grow bg-none outline-0 border-0 text-white" placeholder="Pesquisar..." />
+                <button id="clear-btn" type="button" onclick="clearSearch()" class="text-xl text-amber-400 hidden border-none cursor-pointer absolute right-1 top-1/2 -translate-y-1/2 bg-transparent" style="
+              ">×</button>
+              </div>
+            </label>
+
+            <div id="macOnly" class="hidden">
+              <kbd class="macOnly kbd kbd-sm bg-gray-500 text-gray-800 font-black">⌘</kbd>
+              <kbd class="macOnly kbd kbd-sm bg-gray-500 text-gray-800 font-black">SHIFT</kbd>
+              <kbd class="macOnly kbd kbd-sm bg-gray-500 text-gray-800 font-black">K</kbd>
+            </div>
+
+            <div id="notMac" class="hidden">
+              <kbd class="notMac kbd kbd-sm bg-gray-500 text-gray-800 font-black">CTRL</kbd>
+              <kbd class="notMac kbd kbd-sm bg-gray-500 text-gray-800 font-black">SHIFT</kbd>
+              <kbd class="notMac kbd kbd-sm bg-gray-500 text-gray-800 font-black">K</kbd>
+            </div>
+            <nav class="w-72 px-4">
+              <ul class="flex justify-between">
+                <li>
+                  <a href="#">Notícias</a>
+                </li>
+                <li>
+                  <a href="#">Canais</a>
+                </li>
+                <li>
+                  <a href="#">Explorar</a>
+                </li>
+              </ul>
+            </nav>
+          </header>
+        {% endif %}
+        {% block content %}
+
+        {% endblock %}
+      </div>
     </div>
   </body>
+  <script>
+    const input = document.getElementById('search-input')
+    const clearBtn = document.getElementById('clear-btn')
+    
+    function toggleClearButton() {
+      clearBtn.style.display = input.value ? 'block' : 'none'
+    }
+    
+    function clearSearch() {
+      input.value = ''
+      toggleClearButton()
+      input.focus()
+    }
+    
+    // Chamada no carregamento da página (para exibir o X caso tenha valor vindo da URL)
+    window.onload = toggleClearButton
+  </script>
 </html>

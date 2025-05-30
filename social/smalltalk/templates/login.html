@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{% block content %}
+  <div class="bg-pattern h-screen w-screen relative text-black">
+    <div class="md:absolute md:top-0 md:right-0 card card-side bg-base-100 rounded-none w-1/4 h-full shadow-sm flex-col justify-center items-center noto-sans">
+      <h1 class="text-xl font-bold">SmallTalk<span class="animate-ping">_</span></h1>
+
+      <!-- Login -->
+      {% if not is_new_account %}
+        <div>
+          <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+            <legend class="fieldset-legend">Login</legend>
+
+            <label class="label">Email</label>
+            <input type="email" class="input" placeholder="Email" />
+
+            <label class="label">Senha</label>
+            <input type="password" class="input" placeholder="Senha" />
+
+            <a class="btn btn-primary mt-4" href="{% url 'dashboard' %}">Login</a>
+            <div class="text-sm mt-2 flex justify-center">
+              <p>
+                Não possui uma conta? Crie uma <a href="{% url 'login' slug='new' %}" class="underline">aqui</a>.
+              </p>
+            </div>
+          </fieldset>
+        </div>
+      {% else %}
+        <!-- New Account -->
+        <div>
+          <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+            <legend class="fieldset-legend">Novo usuário</legend>
+
+            <label class="label">Email</label>
+            <input type="email" class="input" placeholder="Email" />
+
+            <label class="label">Senha</label>
+            <input type="password" class="input" placeholder="Senha" />
+
+            <label class="label">Confirme a Senha</label>
+            <input type="password" class="input" placeholder="Confirme a senha" />
+
+            <button class="btn btn-neutral mt-4">Criar conta</button>
+          </fieldset>
+        </div>
+        <div class="text-sm mt-2">
+          <p>
+            Já possui uma conta? Faça <a href="{% url 'login' %}" class="text-cyan-700 font-bold">login</a>.
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

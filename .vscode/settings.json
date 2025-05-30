@@ -1,0 +1,32 @@
+{
+    "tailwindCSS.includeLanguages": {
+        "django-html": "html"
+    },
+    "files.associations": {
+        "**/templates/**/*.html": "django-html",
+        "**/social/templates/**/*.html": "django-html"
+    },
+    "tailwind-fold.supportedLanguages": [
+        "html",
+        "django-html",
+        "typescriptreact",
+        "javascriptreact",
+        "typescript",
+        "javascript",
+        "vue-html",
+        "vue",
+        "php",
+        "markdown",
+        "coffeescript",
+        "svelte",
+        "astro",
+        "erb"
+    ],
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+    "[django-html]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "junstyle.vscode-django-support"
+  },
+}

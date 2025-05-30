@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block content %}
+  <div class="flex justify-between h-11/12">
+    <!-- Sidebar -->
+    <aside class="esquerda w-60 p-4 bg-card-dark border-r border-neutral-800 flex flex-col justify-between">
+      <nav class="space-y-3 flex flex-col">
+        <a href="#" class="flex gap-2 font-bold rounded-xs hover:bg-[rgba(255,255,255,0.15)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-home">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+            <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+            <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+          </svg>Meu Feed
+        </a>
+        <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-affiliate">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M5.931 6.936l1.275 4.249m5.607 5.609l4.251 1.275" />
+            <path d="M11.683 12.317l5.759 -5.759" />
+            <path d="M5.5 5.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+            <path d="M18.5 5.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+            <path d="M18.5 18.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+            <path d="M8.5 15.5m-4.5 0a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0" />
+          </svg>Comunidades
+        </a>
+        <a href="#" class="flex justify-between hover:bg-[rgba(255,255,255,0.15)]">
+          <div class="flex gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mailbox">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M10 21v-6.5a3.5 3.5 0 0 0 -7 0v6.5h18v-6a4 4 0 0 0 -4 -4h-10.5" />
+              <path d="M12 11v-8h4l2 2l-2 2h-4" />
+              <path d="M6 15h1" />
+            </svg>Mensagens
+          </div>
+          <div class="badge badge-neutral rounded-full font-bold border-none noto-sans hover:bg-cyan-800">99+</div>
+        </a>
+        <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bookmark">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" />
+          </svg>Itens Salvos
+        </a>
+        <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-dots-circle-horizontal">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+            <path d="M8 12l0 .01" />
+            <path d="M12 12l0 .01" />
+            <path d="M16 12l0 .01" />
+          </svg>Mais
+        </a>
+        <div class="divider before:bg-zinc-700 after:bg-zinc-700 m-0 mb-2"></div>
+        <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-notification">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10 6h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+            <path d="M17 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+          </svg>Notificações
+        </a>
+        <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-alt">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M4 8h4v4h-4z" />
+            <path d="M6 4l0 4" />
+            <path d="M6 12l0 8" />
+            <path d="M10 14h4v4h-4z" />
+            <path d="M12 4l0 10" />
+            <path d="M12 18l0 2" />
+            <path d="M16 5h4v4h-4z" />
+            <path d="M18 4l0 1" />
+            <path d="M18 9l0 11" />
+          </svg>Configurações
+        </a>
+        <div class="divider before:bg-zinc-700 after:bg-zinc-700 m-0 mb-2"></div>
+        <div class="avatar flex gap-2 text-white items-center">
+          <div class="w-8 rounded-full">
+            <a href="#"><img src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" /></a>
+          </div>
+          <a href="#"><p>User Test</p></a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Feed -->
+    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4">
+      <div class="relative border-1 rounded-xl border-zinc-700 pb-2">
+        <div class="rounded-t-xl h-1/2 -z-50 w-full">
+          <img src="https://picsum.photos/1000/250" class="rounded-t-xl h-[250px]" alt="" />
+          <img width="100" height="100" class="border-4 border-zinc-900 rounded-full absolute top-46 left-8 z-50" src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" />
+        </div>
+        <div class="flex flex-col h-40 gap-2 p-4">
+          <div class="flex flex-col justify-between pt-6">
+            <div class="flex justify-between">
+              <div class="flex gap-2 items-center">
+                <h3 class="text-xl">User Test</h3>
+                <div class="flex gap-2">
+                  <div class="z-50 tooltip" data-tip="Membro apoiador há 1 dia">
+                    <p class="bg-amber-500/15 rounded-md px-1 text-amber-500 cursor-pointer">#SuperUser</p>
+                  </div>
+                  <div class="z-50 tooltip" data-tip="Inicou 132 conversas">
+                    <p class="bg-pink-500/15 rounded-md px-1 text-pink-500 cursor-pointer">#FireStarter</p>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-row-reverse gap-2">
+                <p class="font-bold">
+                  900 <span class="font-normal text-sm text-zinc-500">seguidores</span>
+                </p>
+                <p class="font-bold">
+                  350 <span class="font-normal text-sm text-zinc-500">seguindo</span>
+                </p>
+              </div>
+            </div>
+            <p class="text-zinc-500 text-sm">@usertest03265</p>
+          </div>
+          <div>
+            <p class="text-md">Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, eum!</p>
+          </div>
+          <div class="flex gap-4">
+            <div class="flex gap-1 items-center text-zinc-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-map-pin">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" />
+              </svg>
+              <p>Brazil</p>
+            </div>
+            <div class="flex gap-1 items-center text-zinc-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                <path d="M16 3v4" />
+                <path d="M8 3v4" />
+                <path d="M4 11h16" />
+                <path d="M7 14h.013" />
+                <path d="M10.01 14h.005" />
+                <path d="M13.01 14h.005" />
+                <path d="M16.015 14h.005" />
+                <path d="M13.015 17h.005" />
+                <path d="M7.01 17h.005" />
+                <path d="M10.01 17h.005" />
+              </svg>
+              <p>Membro desde 27/05/2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- posts -->
+      <div class="border-1 rounded-xl p-4 border-zinc-700">
+        <div class="flex justify-between">
+          <div class="flex gap-2 items-center">
+            <a href="#"><img width="60" height="60" class="rounded-full" src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" /></a>
+            <div>
+              <p class="flex items-center gap-2">
+                Random User
+                <span class="tooltip" data-tip="Membro apoiador há 1 dia">
+                  <span class="text-amber-400 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mood-spark">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M21 12a9 9 0 1 0 -8.994 9" />
+                      <path d="M9 10h.01" />
+                      <path d="M15 10h.01" />
+                      <path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
+                      <path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" />
+                    </svg>
+                  </span>
+                </span>
+                <span class="tooltip" data-tip="Iniciou 132 conversas">
+                  <span class="text-pink-500 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message-2-bolt">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M8 9h8" />
+                      <path d="M8 13h6" />
+                      <path d="M13 20l-1 1l-3 -3h-3a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v5.5" />
+                      <path d="M19 16l-2 3h4l-2 3" />
+                    </svg>
+                  </span>
+                </span>
+              </p>
+              <p>Há 3 horas atrás</p>
+            </div>
+          </div>
+          <div>
+            <div class="dropdown dropdown-hover dropdown-end">
+              <div tabindex="0" class="bg-transparent shadow-none px-4 cursor-pointer" role="button" class="btn m-1">...</div>
+              <ul tabindex="0" class="dropdown-content menu bg-base-100 border-1 border-zinc-800 bg-zinc-900 rounded-box z-1 w-52 p-2 shadow-sm">
+                <li>
+                  <a class="flex items-center gap-2">Salvar</a>
+                </li>
+                <li>
+                  <a class="flex items-center gap-2">Denunciar</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- post content -->
+        <div class="mt-2">
+          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus quaerat et, vel illo ipsam voluptate assumenda omnis dolore, non impedit beatae excepturi cumque officiis consequuntur nam aperiam repudiandae fugit quasi ad repellendus molestiae! Unde repellat id iusto nihil accusantium. Consectetur maxime eius sint, praesentium beatae accusantium id voluptas accusamus voluptate libero similique voluptatem, sequi aspernatur!</p>
+          <div class="flex mt-2 gap-2">
+            <a href="#" class="text-cyan-600">#amo</a>
+            <a href="#" class="text-cyan-600">#amas</a>
+            <a href="#" class="text-cyan-600">#amat</a>
+          </div>
+          <div class="mt-2 flex gap-2">
+            <button class="flex gap-2 items-center text-sm font-bold px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-thumb-up">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3" />
+              </svg>
+              <p class="m-0">12</p>
+            </button>
+            <button class="flex gap-2 items-center text-sm font-bold px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+              </svg>
+              <p class="m-0">248 mil</p>
+            </button>
+            <button class="flex gap-2 items-center text-sm font-bold px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+              </svg>
+              <p class="m-0">1</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="direita w-72 p-4 bg-card-dark border-l border-neutral-800">
+      <div>
+        <h3 class="font-semibold mb-2">Assuntos do Momento</h3>
+        <div class="flex flex-wrap gap-2 text-xs text-gray-400">
+          <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#linode</span>
+          <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#dev</span>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <h3 class="font-semibold mb-2">Melhores da Semana</h3>
+        <ul class="space-y-2">
+          <li class="flex justify-between">
+            <span>VS Code</span>
+            <button class="text-xs text-amber-300 font-bold px-2 py-1 bg-amber-300/15 rounded cursor-pointer hover:bg-amber-300/30">Mais curtido</button>
+          </li>
+          <li class="flex justify-between">
+            <span>Perlpeixty AI</span>
+            <button class="text-xs text-cyan-300 font-bold px-2 py-1 bg-cyan-300/15 rounded cursor-pointer hover:bg-cyan-300/30">Mais comentado</button>
+          </li>
+          <li class="flex justify-between">
+            <span>Shadcn/UI</span>
+            <button class="text-xs text-purple-300 font-bold px-2 py-1 bg-purple-300/15 rounded cursor-pointer hover:bg-purple-300/30">Mais compartilhado</button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-6">
+        <h3 class="font-semibold mb-2">Talvez você conheça</h3>
+        <ul class="space-y-5">
+          <li class="flex justify-between">
+            <a href="#" class="flex justify-between gap-2 items-center">
+              <img width="40" height="40" class="rounded-full" src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" />
+              <p>Zezinho da Esquina</p>
+              <button class="text-xs px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">Seguir</button>
+            </a>
+          </li>
+          <li class="flex justify-between">
+            <a href="#" class="flex justify-between gap-2 items-center">
+              <img width="40" height="40" class="rounded-full" src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" />
+              <p>Zezinho da Esquina</p>
+              <button class="text-xs px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">Seguir</button>
+            </a>
+          </li>
+          <li class="flex justify-between">
+            <a href="#" class="flex justify-between gap-2 items-center">
+              <img width="40" height="40" class="rounded-full" src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" />
+              <p>Zezinho da Esquina</p>
+              <button class="text-xs px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">Seguir</button>
+            </a>
+          </li>
+          <li class="flex justify-between">
+            <a href="#" class="flex justify-between gap-2 items-center">
+              <img width="40" height="40" class="rounded-full" src="https://s3.amazonaws.com/appforest_uf/f1485665415623x323958275606855740/AA_icon.png" />
+              <p>Zezinho da Esquina</p>
+              <button class="text-xs px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">Seguir</button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+{% endblock %}
