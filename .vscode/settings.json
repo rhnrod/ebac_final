@@ -30,4 +30,5 @@
     "editor.defaultFormatter": "junstyle.vscode-django-support"
 },
 "gitflow.disableOnRepo": true,
+"totvsLanguageServer.welcomePage": false,
 }

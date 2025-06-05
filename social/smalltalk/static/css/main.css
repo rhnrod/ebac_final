@@ -52,3 +52,15 @@ input[type="search"]::-webkit-search-cancel-button {
 .profile-pic:hover svg {
     opacity: 1;
 }
+
+.photo-cover > div > div {
+    opacity: 0;
+}
+
+.photo-cover svg {
+    opacity: 0;
+}
+
+.photo-cover:hover svg {
+    opacity: 1;
+}

@@ -1,0 +1,57 @@
+<aside class="direita w-72 p-4 bg-card-dark border-l border-neutral-800">
+  <div>
+    <h3 class="font-semibold mb-2">Assuntos do Momento</h3>
+    <div class="flex flex-wrap gap-2 text-xs text-gray-400">
+      <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#linode</span>
+      <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#dev</span>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <h3 class="font-semibold mb-2">Melhores da Semana</h3>
+    <ul class="space-y-2">
+      <li class="flex justify-between">
+        <span>VS Code</span>
+        <button class="text-xs font-bold px-2 py-1 bg-amber-400/20 text-amber-400 rounded-sm cursor-pointer hover:bg-amber-400/50">Mais curtido</button>
+      </li>
+      <li class="flex justify-between">
+        <span>Perlpeixty AI</span>
+        <button class="text-xs font-bold px-2 py-1 rounded-sm cursor-pointer bg-cyan-400/20 text-cyan-400 hover:bg-cyan-400/50">Mais comentado</button>
+      </li>
+      <li class="flex justify-between">
+        <span>Shadcn/UI</span>
+        <button class="text-xs font-bold px-2 py-1 cursor-pointer rounded-sm text-purple-400 bg-purple-400/20 hover:bg-purple-400/50">Mais compartilhado</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mt-6">
+    <div class="flex justify-between">
+      <h3 class="font-semibold mb-2">Talvez você conheça</h3>
+    </div>
+    <ul class="space-y-5">
+      {% for profile in profiles %}
+        {% if not profile in logged_follows %}
+          <li class="flex justify-between w-full">
+            <div class="flex justify-between w-full gap-2 items-center">
+              <a href="{% url 'profile' slug=profile.user.username %}" class="flex gap-2 items-center">
+                {% if profile.profile_pic %}
+                  <img width="40" height="40" class="rounded-full" src="{{ profile.profile_pic.url }}" />
+                {% else %}
+                  <img width="40" height="40" class="rounded-full" src="https://api.dicebear.com/9.x/thumbs/svg?seed={{ profile.user.username }}" />
+                {% endif %}
+                <p></p>
+                {% if profile.first_name %}
+                  {{ profile.first_name }}
+                {% else %}
+                  {{ profile.user.username|capfirst }}
+                {% endif %}
+              </a>
+              <button class="text-xs px-2 py-1 bg-neutral-700 rounded cursor-pointer font-bold hover:bg-neutral-600">Seguir</button>
+            </div>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</aside>
