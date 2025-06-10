@@ -1,6 +1,6 @@
 <aside class="esquerda w-60 p-4 bg-card-dark border-r border-neutral-800 flex flex-col justify-between">
   <nav class="space-y-3 flex flex-col">
-    <a href="{% url 'dashboard' %}" class="flex gap-2 font-bold rounded-xs hover:bg-[rgba(255,255,255,0.15)]">
+    <a href="{% url 'dashboard' %}" class="flex gap-2 rounded-xs">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-home">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
@@ -8,18 +8,21 @@
         <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
       </svg>Meu Feed
     </a>
-    <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-affiliate">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path d="M5.931 6.936l1.275 4.249m5.607 5.609l4.251 1.275" />
-        <path d="M11.683 12.317l5.759 -5.759" />
-        <path d="M5.5 5.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
-        <path d="M18.5 5.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
-        <path d="M18.5 18.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
-        <path d="M8.5 15.5m-4.5 0a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0" />
-      </svg>Comunidades
+    <a href="#" class="flex justify-between">
+      <div class="flex gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-affiliate">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M5.931 6.936l1.275 4.249m5.607 5.609l4.251 1.275" />
+          <path d="M11.683 12.317l5.759 -5.759" />
+          <path d="M5.5 5.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+          <path d="M18.5 5.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+          <path d="M18.5 18.5m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+          <path d="M8.5 15.5m-4.5 0a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0" />
+        </svg>Comunidades
+      </div>
+      <div class="text-shadow-amber-300 text-shadow-[0_0_15px] noto-sans uppercase text-amber-300 text-[8px] font-bold">Em Breve</div>
     </a>
-    <a href="#" class="flex justify-between hover:bg-[rgba(255,255,255,0.15)]">
+    <a href="#" class="flex justify-between">
       <div class="flex gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mailbox">
           <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -28,15 +31,14 @@
           <path d="M6 15h1" />
         </svg>Mensagens
       </div>
-      <div class="badge badge-neutral rounded-full font-bold border-none noto-sans hover:bg-cyan-800">99+</div>
     </a>
-    <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+    <a href="#" class="flex gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bookmark">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" />
       </svg>Itens Salvos
     </a>
-    <a href="{% url 'logout' %}" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+    <a href="{% url 'logout' %}" class="flex gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
@@ -45,14 +47,14 @@
       </svg>Sair
     </a>
     <div class="divider before:bg-zinc-700 after:bg-zinc-700 m-0 mb-2"></div>
-    <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+    <a href="#" class="flex gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-notification">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M10 6h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
         <path d="M17 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
       </svg>Notificações
     </a>
-    <a href="#" class="flex gap-2 hover:bg-[rgba(255,255,255,0.15)]">
+    <a href="{% url 'config' %}" class="flex gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-alt">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M4 8h4v4h-4z" />

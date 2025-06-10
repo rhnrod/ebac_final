@@ -2,8 +2,9 @@
   <div>
     <h3 class="font-semibold mb-2">Assuntos do Momento</h3>
     <div class="flex flex-wrap gap-2 text-xs text-gray-400">
-      <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#linode</span>
-      <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#dev</span>
+      {% for tag in filtered_tags %}
+        <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">{{ tag }}</span>
+      {% endfor %}
     </div>
   </div>
 
@@ -26,8 +27,13 @@
   </div>
 
   <div class="mt-6">
-    <div class="flex justify-between">
-      <h3 class="font-semibold mb-2">Talvez você conheça</h3>
+    <div class="flex justify-between items-center">
+      {% if profiles.count > 0 and logged_follows.count != profiles.count %}
+        <h3 class="font-semibold mb-2">Talvez você conheça</h3>
+      {% else %}
+        <h3 class="font-semibold">Convide amigos</h3>
+        <button class="text-xs px-2 py-1 bg-neutral-700 rounded font-bold cursor-pointer hover:bg-neutral-600" onclick="inviteFriends()">Convidar</button>
+      {% endif %}
     </div>
     <ul class="space-y-5">
       {% for profile in profiles %}

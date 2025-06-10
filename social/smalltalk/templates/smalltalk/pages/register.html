@@ -30,10 +30,10 @@
           <legend class="fieldset-legend">Novo usuário</legend>
 
           <label class="label">Usuário</label>
-          <input required type="text" class="input validator" pattern="{{ username_pattern }}" name="username" minlength="3" maxlength="18" title="Somente letras, números e - ou _," />
+          <input required type="text" class="input validator" pattern="{{ username_pattern }}" name="username" minlength="3" maxlength="18" title="Somente letras, números ou _" />
           <p class="validator-hint hidden">
-            Deve conter de 3 a 18 dígitos, sendo
-            <br />apenas letras, números, - (hífen) ou _ (underline)
+            Deve conter de 3 a 18 dígitos, iniciando com uma letra e
+            <br />contendo apenas letras, números ou _ (underscore)
           </p>
 
           <label class="label">E-mail</label>

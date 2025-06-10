@@ -9,10 +9,14 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('profile/<slug:slug>/', views.profile, name='profile'),
     path('profile/', views.profile, name='profile'),
+    path('whoswho/<slug:slug>/', views.whoswho, name='whoswho'),
+    path('whoswho/', views.whoswho, name='whoswho'),
     path('search/<slug:slug>/', views.search, name='search'),
     path('login', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('register', views.register, name='register'),
+    path('delete_post/<int:post_id>', views.delete_post, name='delete_post'),
+    path('config', views.config, name='config'),
 ]
 
 if settings.DEBUG:

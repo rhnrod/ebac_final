@@ -35,11 +35,11 @@
           {% if profile_data.cover_pic %}
             <img src="{{ profile_data.cover_pic.url }}" class="rounded-t-xl h-[250px] object-cover" alt="" />
           {% else %}
-            <img src="https://picsum.photos/1000/250" class="rounded-t-xl h-[250px]" alt="" />
+            <img src="/media/smalltalk/cover_pics/pattern_template.png" class="rounded-t-xl h-[250px] object-fit" alt="" />
           {% endif %}
           {% if user.username == slug %}
             <div class="flex items-center justify-center">
-              <button class="profile-pic cursor-pointer flex justify-center items-center absolute top-46 left-8 rounded-full z-50 w-[100px] h-[100px]" onclick="profile_pic_update.showModal()">
+              <button class="profile-pic cursor-pointer flex justify-center items-center absolute top-46 left-8 rounded-full z-50 w-[100px] h-[100px]" id="openModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-camera">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
@@ -103,17 +103,19 @@
                     {% endif %}
                   </form>
                 {% endif %}
-                <p class="font-bold">
-                  {{ profile_data.followers_count }}
-                  {% if profile_data.followers_count != 1 %}
-                    <span class="font-normal text-sm text-zinc-500">seguidores</span>
-                  {% else %}
-                    <span class="font-normal text-sm text-zinc-500">seguidor</span>
-                  {% endif %}
-                </p>
-                <p class="font-bold">
-                  {{ profile_data.following_count }} <span class="font-normal text-sm text-zinc-500">seguindo</span>
-                </p>
+                <a class="flex gap-2" href="{% url 'whoswho' slug=profile_data.user.username %}">
+                  <p class="font-bold">
+                    {{ profile_data.followers_count }}
+                    {% if profile_data.followers_count != 1 %}
+                      <span class="font-normal text-sm text-zinc-500">seguidores</span>
+                    {% else %}
+                      <span class="font-normal text-sm text-zinc-500">seguidor</span>
+                    {% endif %}
+                  </p>
+                  <p class="font-bold">
+                    {{ profile_data.following_count }} <span class="font-normal text-sm text-zinc-500">seguindo</span>
+                  </p>
+                </a>
               </div>
             </div>
             <p class="text-zinc-500 text-sm">@{{ profile_data.user.username }}</p>
@@ -151,6 +153,20 @@
               </svg>
               <p>Membro desde {{ profile_data.created_at|date:'d/m/Y' }}</p>
             </div>
+          </div>
+        </div>
+        <div id="modal" class="fixed inset-0 items-center justify-center hidden z-50">
+          <!-- Fundo escuro com blur -->
+          <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+          <div id="modalContent" class="z-50 bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
+              <legend class="fieldset-legend text-neutral-500">Selecione um arquivo</legend>
+              <div class="flex gap-4">
+                <input type="file" accept=".png,.jpg,.jpeg" class="file-input outline-none bg-zinc-800 text-white border-zinc-600 placeholder-gray-400" />
+                <button class="py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm bg-zinc-700 hover:bg-zinc-800">Enviar</button>
+              </div>
+              <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
+            </fieldset>
           </div>
         </div>
       </div>

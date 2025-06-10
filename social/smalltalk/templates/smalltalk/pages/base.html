@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html id="html-root">
+<html id="html-root" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,18 +12,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="{% static 'js/util.js' %}"></script>
-    <script src="{% static 'js/checkPlatform.js' %}"></script>
+
     <title>
-      {% if not subscribe %}
-        SmallTalk |
-      {% endif %}
       {% block title %}
 
       {% endblock %}
     </title>
   </head>
-  <body>
+  <body class="select-none">
     <div class="@container">
       <div class="bg-zinc-900 text-white noto-sans h-screen">
         {% if not hide_header %}
@@ -74,23 +70,16 @@
             </nav>
           </header>
         {% endif %}
+        <div class="toast toast-end font-bold">
+          <div id="toast-message" class="hidden alert alert-success transition-all ease-in-out">
+            <span>Campo de Mensagem</span>
+          </div>
+        </div>
         {% block content %}
 
         {% endblock %}
       </div>
     </div>
-    <dialog id="profile_pic_update" class="modal fixed inset-0 z-50 p-0 m-0">
-      <div class="modal-box flex items-center justify-center">
-        <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
-          <legend class="fieldset-legend">Selecione um arquivo</legend>
-          <div class="flex gap-4">
-            <input type="file" accept=".png,.jpg,.jpeg" class="file-input outline-none text-amber-500" />
-            <button class="btn">enviar</button>
-          </div>
-          <label class="label"><span class="text-zinc-400">Max size 2MB</span></label>
-        </fieldset>
-      </div>
-    </dialog>
   </body>
   <script>
     const input = document.getElementById('search-input')
@@ -135,4 +124,115 @@
       })
     }
   </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const textarea = document.getElementById('post-input')
+      const form = textarea.closest('form')
+    
+      textarea.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+          e.preventDefault() // previne quebra de linha se necessário
+          form.querySelector('#send-button').click()
+        }
+      })
+    })
+  </script>
+
+  {% comment %} {% endcomment %}
+  {% if request.path == '/' %}
+    <script>
+      const postLength = document.getElementById('post-input')
+      const charsLeft = document.getElementById('chars-count')
+      const sendButton = document.getElementById('send-button')
+      
+      postLength.addEventListener('input', () => {
+        const inputLength = postLength.value.length
+        const charsRemaining = 255 - inputLength
+      
+        if (inputLength > 0) {
+          sendButton.disabled = false
+          sendButton.classList.remove('opacity-50')
+        } else {
+          sendButton.disabled = true
+          sendButton.classList.add('opacity-50')
+        }
+      
+        charsLeft.innerText = charsRemaining
+      
+        charsLeft.classList.remove('text-white', 'text-amber-300', 'text-red-400')
+      
+        if (charsRemaining <= 50) {
+          charsLeft.classList.add('text-red-400')
+        } else if (charsRemaining <= 150) {
+          charsLeft.classList.add('text-amber-300')
+        } else {
+          charsLeft.classList.add('text-white')
+        }
+      })
+      
+      const testClick = () => {
+        console.log('Testado e aprovado!')
+      }
+    </script>
+  {% endif %}
+
+  <script>
+    const inviteFriends = () => {
+      const texto = "Oi! Saca só esse rede social chamada 'SmallTalk'. Tô curtindo demais! → http://localhost:8000/welcome"
+      const toast = document.getElementById('toast-message')
+      navigator.clipboard
+        .writeText(texto)
+        .then(() => {
+          toast.innerText = 'Texto copiado com sucesso!'
+          toast.classList.remove('opacity-1', 'hidden')
+    
+          setTimeout(() => {
+            toast.classList.add('opacity-1')
+            setTimeout(() => {
+              toast.classList.add('hidden')
+            }, 499)
+          }, 2999)
+        })
+        .catch((err) => {
+          console.error('Erro ao copiar texto: ', err)
+        })
+    }
+  </script>
+  <script>
+    const blurOnClick = () => {
+      const el = document.activeElement
+      el?.blur()
+    }
+  </script>
+
+  {% if 'profile' in request.path or 'config' in request.path %}
+    <script>
+      const modal = document.getElementById('modal')
+      const openBtn = document.getElementById('openModal')
+      const modalContent = document.getElementById('modalContent')
+      
+      // Abrir modal
+      openBtn.addEventListener('click', () => {
+        modal.classList.add('flex')
+        modal.classList.remove('hidden')
+      })
+      
+      // Fechar modal ao clicar fora do conteúdo
+      modal.addEventListener('click', (e) => {
+        if (!modalContent.contains(e.target)) {
+          modal.classList.add('hidden')
+          modal.classList.remove('flex')
+        }
+      })
+      
+      // Fechar modal ao pressionar ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          modal.classList.add('hidden')
+          modal.classList.remove('flex')
+        }
+      })
+    </script>
+  {% endif %}
 </html>
