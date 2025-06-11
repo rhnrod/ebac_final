@@ -97,7 +97,7 @@
         <form method="POST" class="flex gap-4" enctype="multipart/form-data">
           {% csrf_token %}
           {{ pic_form.profile_pic }}
-          <button class="py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm bg-zinc-700 hover:bg-zinc-800">Enviar</button>
+          <button class="btn py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm">Enviar</button>
         </form>
         <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
       </fieldset>
@@ -114,7 +114,7 @@
         <form method="POST" class="flex gap-4" enctype="multipart/form-data">
           {% csrf_token %}
           {{ pic_form.cover_pic }}
-          <button class="py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm bg-zinc-700 hover:bg-zinc-800">Enviar</button>
+          <button class="btn py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm">Enviar</button>
         </form>
         <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
       </fieldset>

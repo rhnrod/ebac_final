@@ -141,7 +141,12 @@ def dashboard(request):
     posts = Post.objects.filter(
         Q(user__in=usuarios_seguidos) | Q(shares__in=usuarios_seguidos)
     ).distinct()
-    shared_posts = len([post for post in posts if request.user in post.shares.all()])
+
+    
+
+    shared_posts = [post for post in posts if request.user in post.shares.all()]
+    shared_follows = [post.user for post in shared_posts]
+    shared_posts_count = len([post for post in posts if request.user in post.shares.all()])
 
     context = {
         'super_user_date': super_user_date + " dias" if super_user_date != 1 else super_user_date + " dia",
@@ -150,8 +155,11 @@ def dashboard(request):
         'user': request.user,
         'logged_user': logged_user,
         'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
+        'logged_follows_user': [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)],
         'posts': posts,
         'shared_posts': shared_posts,
+        'shared_follows': shared_follows,
+        'shared_posts_count': shared_posts_count,
         'tags': Tag.objects.annotate(mentions=Count('post')).order_by('-mentions'),
         'filtered_tags': Tag.objects.annotate(mentions=Count('post'))
                             .filter(mentions__gt=0)
@@ -195,10 +203,20 @@ def profile(request, slug=None):
     if slug is None:
         return redirect('profile', slug=request.user.username)
 
-    posts = Post.objects.filter(user__username=slug)
     user_profile = get_object_or_404(Profile, user__username=slug)
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
+
+    seguindo = logged_user.follows.all()
+    usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
+
+    posts = Post.objects.filter(
+        Q(user__in=usuarios_seguidos) | Q(shares__in=usuarios_seguidos)
+    ).distinct()
+
+    profile_posts = Post.objects.filter(user__username=slug).order_by('-created_at')
+    shared_posts = [post.user for post in posts if request.user in post.shares.all()]
+    shared_posts_count = len([post for post in posts if request.user in post.shares.all()])
 
     pic_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=request.user.profile)
 
@@ -226,14 +244,18 @@ def profile(request, slug=None):
         'slug': slug,
         'follows': user_profile.follows.exclude(user__id=user_profile.user.id),
         'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
+        'logged_follows_user': [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)],
         'followers': user_profile.followed_by.exclude(user__id=user_profile.user.id),
         'logged_user': logged_user,
         'profile_data': user_profile,
+        'profile_posts': profile_posts,
         'super_user_date': super_user_date,
         'follow_you': logged_user.followed_by.all().exclude(id=logged_user.user.id),
         'subscribe': True,
         'aguardando': False,
         'posts': posts,
+        'shared_posts': shared_posts,
+        'shared_posts_count': shared_posts_count,
         'tags': Tag.objects.annotate(mentions=Count('post')).order_by('-mentions'),
         'filtered_tags': Tag.objects.annotate(mentions=Count('post'))
                             .filter(mentions__gt=0)
