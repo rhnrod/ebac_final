@@ -99,10 +99,17 @@
               <form action="share" method="POST">
                 {% csrf_token %}
                 <a role="button" href="{% url 'post_share' post.id %}" class="flex gap-2 items-center text-sm font-bold px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
-                  </svg>
+                  {% if request.user in post.shares.all %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                    </svg>
+                  {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                    </svg>
+                  {% endif %}
                   <p class="m-0">{{ post.shares_counter }}</p>
                 </a>
               </form>
@@ -202,10 +209,17 @@
               <form action="share" method="POST">
                 {% csrf_token %}
                 <a role="button" href="{% url 'post_share' post.id %}" class="flex gap-2 items-center text-sm font-bold px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
-                  </svg>
+                  {% if request.user in post.shares.all %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                    </svg>
+                  {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                    </svg>
+                  {% endif %}
                   <p class="m-0">{{ post.shares_counter }}</p>
                 </a>
               </form>
@@ -306,10 +320,17 @@
                 <form action="share" method="POST">
                   {% csrf_token %}
                   <a role="button" href="{% url 'post_share' post.id %}" class="flex gap-2 items-center text-sm font-bold px-2 py-1 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
-                    </svg>
+                    {% if request.user in post.shares.all %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                      </svg>
+                    {% else %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-share-3">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+                      </svg>
+                    {% endif %}
                     <p class="m-0">{{ post.shares_counter }}</p>
                   </a>
                 </form>
