@@ -6,7 +6,7 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Profile, User, Post, Tag
-from .forms import PostForm
+from .forms import PostForm, ProfileForm, ProfilePicForm
 from .censor import PALAVRAS_PROIBIDAS, CARACTERES_SUBSTITUTIVOS
 
 import re
@@ -154,24 +154,34 @@ def profile(request, slug=None):
     data_base = date(2025, 5, 27)
     super_user_days = (data_atual - data_base).days
     super_user_date = f"{super_user_days} {'dia' if super_user_days == 1 else 'dias'}"
-    posts = Post.objects.filter(user__username=slug).order_by('-created_at')
 
     if slug is None:
         return redirect('profile', slug=request.user.username)
 
-    # Busca o Profile com base no slug (username do User)
+    posts = Post.objects.filter(user__username=slug).order_by('-created_at')
     user_profile = get_object_or_404(Profile, user__username=slug)
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
 
-    if request.method == 'POST':
-        action = request.POST['follow']
+    pic_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=request.user.profile)
 
-        if action == 'follow':
-            logged_user.follows.add(user_profile)
-        elif action == 'unfollow':
-            logged_user.follows.remove(user_profile)
-        logged_user.save()
+    if request.method == 'POST':
+        if 'follow' in request.POST:
+            action = request.POST['follow']
+            if action == 'follow':
+                logged_user.follows.add(user_profile)
+            elif action == 'unfollow':
+                logged_user.follows.remove(user_profile)
+            logged_user.save()
+            return redirect('profile', slug=slug)
+
+        # Se não for follow/unfollow, assume que é upload de imagem
+        if pic_form.is_valid():
+            pic_form.save()
+            messages.success(request, "Imagem atualizada com sucesso!")
+            return redirect('profile', slug=slug)
+        else:
+            messages.error(request, "Erro ao atualizar a imagem. Verifique o arquivo enviado.")
 
     context = {
         'profiles': profiles,
@@ -191,8 +201,10 @@ def profile(request, slug=None):
         'filtered_tags': Tag.objects.annotate(mentions=Count('post'))
                             .filter(mentions__gt=0)
                             .order_by('-mentions')[:10],
+        'pic_form': pic_form,
     }
     return render(request, 'smalltalk/pages/profile.html', context)
+
 
 
 @login_required
@@ -250,15 +262,19 @@ def delete_post(request, post_id=None):
 
 @login_required
 def config(request):
+    user = request.user
+    profile = user.profile
+
+    # Formulário de imagem
+    pic_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile)
+
     if request.method == 'POST':
+        # Atualiza dados básicos do usuário
         username = request.POST.get('username', '').strip()
         first_name = request.POST.get('first_name', '').strip()
         description = request.POST.get('description', '').strip()
         location = request.POST.get('location', '').strip()
         is_public = request.POST.get('is_public') == 'on'
-
-        user = request.user
-        profile = user.profile
 
         if username:
             user.username = username
@@ -266,28 +282,37 @@ def config(request):
 
         if first_name:
             profile.first_name = first_name
+        if description:
             profile.description = description
+        if location:
             profile.location = location
-            profile.is_public = is_public
+        profile.is_public = is_public  # mesmo que esteja off, salva False
+
+        # Se o form de imagem for válido, salva as imagens
+        if pic_form.is_valid():
+            pic_form.save()
+
         profile.save()
 
         messages.success(request, 'Dados atualizados com sucesso!')
+        return redirect('profile')
 
-        return redirect('config')
-    
     context = {
         'password_pattern': r'(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
-        'username_pattern': r'^[a-zA-Z]\w+$',
+        'username_pattern': r'^[a-z][a-z0-9_]+$',
         'first_name_pattern': r'^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s]+$',
         'location_pattern': r'^[A-Za-zÀ-ÿ\s]+$',
-        'config_username': request.user.username,
-        'config_first_name': request.user.profile.first_name or '',
-        'config_description': request.user.profile.description or '',
-        'config_location': request.user.profile.location or '',
-        'config_is_public': request.user.profile.is_public,
-        'logged_user': get_object_or_404(Profile, user__username=request.user.username)
+        'config_username': user.username,
+        'config_first_name': profile.first_name or '',
+        'config_description': profile.description or '',
+        'config_location': profile.location or '',
+        'config_is_public': profile.is_public,
+        'logged_user': get_object_or_404(Profile, user__username=user.username),
+        'form': ProfileForm(instance=profile),
+        'pic_form': pic_form,
     }
     return render(request, 'smalltalk/pages/config.html', context)
+
 
 @login_required
 def search(request, slug=None):
@@ -302,3 +327,17 @@ def search(request, slug=None):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def updatePics(request):
+    path = request.path
+
+    if request.method == 'POST':
+        form = ProfilePicForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            if 'config' in path:
+                return redirect('config')
+            return redirect('profile')
+    if 'config' in path:
+        return redirect('config')
+    return redirect('profile')

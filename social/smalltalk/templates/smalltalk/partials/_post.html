@@ -10,19 +10,21 @@
         <div class="flex justify-between">
           <a class="flex gap-2 items-center" href="{% url 'profile' slug=post.user.username %}">
             {% if post.user.profile.profile_pic %}
-              <img width="60" height="60" class="rounded-full" src="{{ post.user.profile.profile_pic.url }}" />
+              <img width="60" height="60" class="rounded-full max-w-[60px] max-h-[60px] min-w-[60px] min-h-[60px] object-cover" src="{{ post.user.profile.profile_pic.url }}" />
             {% else %}
               <img width="60" height="60" class="rounded-full" src="https://api.dicebear.com/9.x/thumbs/svg?seed={{ post.user.username }}" />
             {% endif %}
             <div>
-              <p class="flex items-center gap-2">
+              <div class="flex flex-col">
                 {% if post.user.profile.first_name %}
-                  {{ post.user.profile.first_name }} {% include 'smalltalk/partials/_badges.html' %}
+                  <p>{{ post.user.profile.first_name }}</p>
+                  <p class="text-sm text-zinc-500">@{{ post.user.username }}</p>
                 {% else %}
-                  {{ post.user.username|capfirst }}
+                  <p>{{ post.user.username|capfirst }}</p>
+                  <p>{{ post.user.username }}</p>
                 {% endif %}
-              </p>
-              <p>{{ post.timetrack }}</p>
+              </div>
+              <p class="text-sm">{{ post.timetrack }}</p>
             </div>
           </a>
           <div>

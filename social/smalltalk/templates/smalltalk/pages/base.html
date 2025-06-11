@@ -12,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="/static/js/util.js"></script>
+    <script src="/static/js/checkPlatform.js"></script>
 
     <title>
       {% block title %}
@@ -81,6 +83,40 @@
       </div>
     </div>
   </body>
+
+  <!-- Modal Profile Pic -->
+  <div id="modal" class="fixed inset-0 items-center justify-center hidden z-50">
+    <!-- Fundo escuro com blur -->
+    <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+    <div id="modalContent" class="z-50 bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
+        <legend class="fieldset-legend text-neutral-500">Selecione um arquivo</legend>
+        <form method="POST" class="flex gap-4" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ pic_form.profile_pic }}
+          <button class="py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm bg-zinc-700 hover:bg-zinc-800">Enviar</button>
+        </form>
+        <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
+      </fieldset>
+    </div>
+  </div>
+
+  <!-- Modal Cover Pic -->
+  <div id="modalCover" class="fixed inset-0 items-center justify-center hidden z-50">
+    <!-- Fundo escuro com blur -->
+    <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+    <div id="modalContent" class="z-50 bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
+        <legend class="fieldset-legend text-neutral-500">Selecione um arquivo</legend>
+        <form method="POST" class="flex gap-4" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ pic_form.cover_pic }}
+          <button class="py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm bg-zinc-700 hover:bg-zinc-800">Enviar</button>
+        </form>
+        <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
+      </fieldset>
+    </div>
+  </div>
   <script>
     const input = document.getElementById('search-input')
     const clearBtn = document.getElementById('clear-btn')
@@ -212,10 +248,18 @@
       const openBtn = document.getElementById('openModal')
       const modalContent = document.getElementById('modalContent')
       
+      const modalCover = document.getElementById('modalCover')
+      const openCoverBtn = document.getElementById('openCoverModal')
+      const modalCoverContent = document.getElementById('modalCoverContent')
       // Abrir modal
       openBtn.addEventListener('click', () => {
         modal.classList.add('flex')
         modal.classList.remove('hidden')
+      })
+      
+      openCoverBtn.addEventListener('click', () => {
+        modalCover.classList.add('flex')
+        modalCover.classList.remove('hidden')
       })
       
       // Fechar modal ao clicar fora do conteúdo
@@ -226,11 +270,21 @@
         }
       })
       
+      modalCover.addEventListener('click', (e) => {
+        if (!modalCoverContent.contains(e.target)) {
+          modalCover.classList.add('hidden')
+          modalCover.classList.remove('flex')
+        }
+      })
+      
       // Fechar modal ao pressionar ESC
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           modal.classList.add('hidden')
           modal.classList.remove('flex')
+      
+          modalCover.classList.add('hidden')
+          modalCover.classList.remove('flex')
         }
       })
     </script>

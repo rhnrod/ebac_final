@@ -12,7 +12,7 @@
     <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4">
       <div class="relative h-150 border-1 rounded-xl border-zinc-700 pb-2">
         <div class="rounded-t-xl h-[250px] -z-40 w-full cursor-pointer">
-          <div class="absolute rounded-t-xl w-full h-[250px] bg-black/35">
+          <div id="openCoverModal" class="absolute rounded-t-xl w-full min-w-[1000px] max-w-[1000px] max-h-[250px] min-h-[250px] bg-black/35">
             <div class="absolute top-3 right-3">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-photo-scan">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -27,7 +27,7 @@
             </div>
           </div>
           {% if logged_user.cover_pic %}
-            <img src="{{ logged_user.cover_pic.url }}" class="rounded-t-xl h-[250px] object-cover" alt="" />
+            <img src="{{ logged_user.cover_pic.url }}" class="rounded-t-xl min-w-[1000px] max-w-[1000px] max-h-[250px] min-h-[250px] object-cover" alt="" />
           {% else %}
             <img src="/media/smalltalk/cover_pics/pattern_template.png" class="rounded-t-xl h-[250px] object-fit" alt="" />
           {% endif %}
@@ -41,12 +41,12 @@
             </button>
           </div>
           {% if logged_user.profile_pic %}
-            <img width="100" height="100" class="border-4 border-zinc-900 rounded-full absolute top-46 left-8 z-40" src="{{ logged_user.profile_pic.url }}" />
+            <img width="100" height="100" class="object-cover min-h-[100px]min-w-[100px] max-w-[100px] max-h-[100px] border-4 border-zinc-900 rounded-full absolute top-46 left-8 z-40" src="{{ logged_user.profile_pic.url }}" />
           {% else %}
             <img width="100" height="100" class="border-4 border-zinc-900 rounded-full absolute top-46 left-8 z-40" src="https://api.dicebear.com/9.x/thumbs/svg?seed={{ logged_user.user.username }}" />
           {% endif %}
         </div>
-        <div class="flex flex-col h-40 gap-2 p-4 mt-12 justify-between">
+        <div class="flex flex-col gap-1 p-4 mt-12 justify-between">
           <div class="flex flex-col">
             <form method="POST">
               {% csrf_token %}
@@ -59,9 +59,9 @@
                         <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
                         <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28" />
                       </svg>
-                      <input class="lowercase" type="text" placeholder="Usuário" value="{{ config_username }}" name="username" minlength="3" maxlength="18" pattern="{{ username_pattern }}" title="Somente letras, números ou _" />
+                      <input type="text" placeholder="Usuário" value="{{ config_username }}" name="username" minlength="3" maxlength="18" pattern="{{ username_pattern }}" title="Somente letras minúsculas, números ou _" />
                     </label>
-                    <p class="validator-hint hidden">De 3 a 18 dígitos iniciando com letra. Apenas letras, números ou _ (underscore)</p>
+                    <p class="validator-hint">De 3 a 18 dígitos iniciando com letra. Apenas letras minúsculas, números ou _ (underscore)</p>
                   </div>
                   <div class="flex flex-col flex-1/3">
                     <label class="input validator bg-transparent border-1 border-zinc-500">
@@ -72,7 +72,7 @@
                       </svg>
                       <input class="capitalize" type="text" placeholder="Nome" value="{{ config_first_name }}" name="first_name" minlength="2" maxlength="20" pattern="{{ first_name_pattern }}" title="Somente letras, números ou _" />
                     </label>
-                    <p class="validator-hint hidden">Deve conter até 20 dígitos, contendo apenas letras ou espaço</p>
+                    <p class="validator-hint">Deve conter até 20 dígitos, contendo apenas letras ou espaço</p>
                   </div>
                   <div class="flex flex-col flex-1/3">
                     <label class="input validator bg-transparent border-1 border-zinc-500">
@@ -83,45 +83,26 @@
                       </svg>
                       <input type="text" placeholder="Localização" value="{{ config_location }}" name="location" minlength="2" maxlength="20" pattern="{{ location_pattern }}" title="Somente letras e espaço" />
                     </label>
-                    <p class="validator-hint hidden">Deve conter apenas letras ou espaço</p>
+                    <p class="validator-hint">Deve conter apenas letras ou espaço</p>
                   </div>
                 </div>
                 <div class="flex flex-col gap-4 w-full">
                   <div class="">
                     <fieldset class="fieldset m-0 p-0 w-full">
-                      <textarea class="textarea w-full h-31 resize-none bg-transparent text-white border outline-0 border-zinc-500" value="{{ config_description }}" placeholder="Bio"></textarea>
+                      {{ form.description }}
                       <div class="label">Opcional</div>
                     </fieldset>
                   </div>
                   <div class="flex justify-between items-center">
                     <div class="flex gap-2 items-center">
                       <p class="font-bold">Perfil é público?</p>
-                      {% if config_is_public %}
-                        <input type="checkbox" checked class="checkbox checkbox-warning checkbox-sm" />
-                      {% else %}
-                        <input type="checkbox" class="checkbox checkbox-warning checkbox-sm" />
-                      {% endif %}
+                      {{ form.is_public }}
                     </div>
-                    <button class="p-2 py-1 rounded-md cursor-pointer border-0 bg-zinc-800 text-white font-bold">Salvar alterações</button>
+                    <button id="updateBtn" class="p-2 py-1 rounded-md cursor-pointer border-0 bg-zinc-800 text-white font-bold">Salvar alterações</button>
                   </div>
                 </div>
               </div>
             </form>
-          </div>
-        </div>
-
-        <div id="modal" class="fixed inset-0 items-center justify-center hidden z-50">
-          <!-- Fundo escuro com blur -->
-          <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
-          <div id="modalContent" class="z-50 bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-md">
-            <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
-              <legend class="fieldset-legend text-neutral-500">Selecione um arquivo</legend>
-              <div class="flex gap-4">
-                <input type="file" accept=".png,.jpg,.jpeg" class="file-input outline-none bg-zinc-800 text-white border-zinc-600 placeholder-gray-400" />
-                <button class="py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm bg-zinc-700 hover:bg-zinc-800">Enviar</button>
-              </div>
-              <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
-            </fieldset>
           </div>
         </div>
       </div>
