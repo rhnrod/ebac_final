@@ -4,6 +4,7 @@ from .models import Post, Profile
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
+        exclude = ['likes']
         fields = ['content']
         widgets = {
             'content': forms.Textarea(attrs={
@@ -49,3 +50,14 @@ class ProfilePicForm(forms.ModelForm):
                 'accept': '.png, .jpg, .jpeg',
             }),
         }
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={
+        'id': 'search-input',
+        'type': 'search',
+        'maxlength': 255,
+        'name': 'search',
+        'class': 'grow bg-none outline-0 border-0 text-white',
+        'placeholder': 'Pesquisar...',
+        'oninput': 'toggleClearButton()',
+    }))

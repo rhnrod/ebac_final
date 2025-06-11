@@ -1,16 +1,18 @@
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
-from datetime import date
-from django.contrib.auth import authenticate, login, logout
-from django.db.models import Count
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.urls import reverse
+
 from .models import Profile, User, Post, Tag
-from .forms import PostForm, ProfileForm, ProfilePicForm
+from .forms import PostForm, ProfileForm, ProfilePicForm, SearchForm
 from .censor import PALAVRAS_PROIBIDAS, CARACTERES_SUBSTITUTIVOS
 
-import re
+from datetime import date
 import random
+import re
 
 def welcome(request):
     context = {
@@ -83,37 +85,47 @@ def censurar_palavras(texto, palavras_proibidas, substitutos):
 def dashboard(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
-        if form.is_valid():
+        search_form = SearchForm(request.POST)
+
+        # Se o search_form foi submetido e é válido
+        if search_form.is_valid() and 'search' in request.POST:
+            termo = search_form.cleaned_data['query']
+            return redirect(f"{reverse('search')}?q={termo}")
+
+        if form.is_valid() and 'posts' in request.POST:
             action = request.POST['posts']
 
-        if action == 'create':
-            post = form.save(commit=False)
-            post.user = request.user
+            if action == 'create':
+                post = form.save(commit=False)
+                post.user = request.user
 
-            # Extrai hashtags
-            hashtags = re.findall(r'#\w+', post.content)
+                # Extrai hashtags
+                hashtags = re.findall(r'#\w+', post.content)
 
-            # Remove o símbolo '#' do texto
-            for tag in hashtags:
-                post.content = post.content.replace(tag, tag[1:])
+                # Remove o símbolo '#' do texto
+                for tag in hashtags:
+                    post.content = post.content.replace(tag, tag[1:])
 
-            # Censura palavras proibidas no conteúdo
-            post.content = censurar_palavras(
-                post.content,
-                palavras_proibidas=PALAVRAS_PROIBIDAS,
-                substitutos=CARACTERES_SUBSTITUTIVOS
-            )
+                # Censura palavras proibidas no conteúdo
+                post.content = censurar_palavras(
+                    post.content,
+                    palavras_proibidas=PALAVRAS_PROIBIDAS,
+                    substitutos=CARACTERES_SUBSTITUTIVOS
+                )
 
-            post.save()
-            for tag_name in hashtags:
-                tag_text = tag_name[1:].lower()
-                if tag_text not in [p.lower() for p in PALAVRAS_PROIBIDAS]:
-                    tag_obj, _ = Tag.objects.get_or_create(name=tag_text)
-                    post.tags.add(tag_obj) 
+                post.save()
+
+                for tag_name in hashtags:
+                    tag_text = tag_name[1:].lower()
+                    if tag_text not in [p.lower() for p in PALAVRAS_PROIBIDAS]:
+                        tag_obj, _ = Tag.objects.get_or_create(name=tag_text)
+                        post.tags.add(tag_obj)
 
         return redirect('dashboard')
+
     else:
         form = PostForm()
+        search_form = SearchForm()
 
     # Dados do dashboard
     data_atual = date.today()
@@ -126,7 +138,10 @@ def dashboard(request):
     seguindo = logged_user.follows.all()
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
 
-    posts = Post.objects.filter(user__in=usuarios_seguidos).order_by('-created_at')
+    posts = Post.objects.filter(
+        Q(user__in=usuarios_seguidos) | Q(shares__in=usuarios_seguidos)
+    ).distinct()
+    shared_posts = len([post for post in posts if request.user in post.shares.all()])
 
     context = {
         'super_user_date': super_user_date + " dias" if super_user_date != 1 else super_user_date + " dia",
@@ -136,17 +151,39 @@ def dashboard(request):
         'logged_user': logged_user,
         'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
         'posts': posts,
+        'shared_posts': shared_posts,
         'tags': Tag.objects.annotate(mentions=Count('post')).order_by('-mentions'),
         'filtered_tags': Tag.objects.annotate(mentions=Count('post'))
                             .filter(mentions__gt=0)
                             .order_by('-mentions')[:10],
-        'form': form  # inclui o form no contexto
+        'form': form,
+        'search_form': search_form,  # inclui o search_form no contexto
     }
 
     return render(request, 'smalltalk/pages/dashboard.html', context)
 
+@login_required
+def post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:  
+        post.likes.add(request.user)
+    
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
+@login_required
+def post_share(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    if post.shares.filter(id=request.user.id).exists():
+        post.shares.remove(request.user)
+    else:  
+        post.shares.add(request.user)
+    
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 def profile(request, slug=None):
@@ -158,7 +195,7 @@ def profile(request, slug=None):
     if slug is None:
         return redirect('profile', slug=request.user.username)
 
-    posts = Post.objects.filter(user__username=slug).order_by('-created_at')
+    posts = Post.objects.filter(user__username=slug)
     user_profile = get_object_or_404(Profile, user__username=slug)
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
@@ -213,7 +250,7 @@ def whoswho(request, slug=None):
     data_base = date(2025, 5, 27)
     super_user_days = (data_atual - data_base).days
     super_user_date = f"{super_user_days} {'dia' if super_user_days == 1 else 'dias'}"
-    posts = Post.objects.filter(user__username=slug).order_by('-created_at')
+    posts = Post.objects.filter(user__username=slug)
 
     if slug is None:
         return redirect('whoswho', slug=request.user.username)
@@ -316,13 +353,13 @@ def config(request):
 
 @login_required
 def search(request, slug=None):
-    user = User.objects.exclude(username=request.user.username)
-    profiles = Profile.objects.exclude(first_name=request.user.first_name)
-    context = {
-        'search_term' : slug,
-        'profiles' : [user, profiles]
-    }
-    return render(request, 'smalltalk/pages/search.html', context)
+    termo = request.GET.get('q', '')
+    resultados = Post.objects.filter(content__icontains=termo)
+
+    return render(request, 'smalltalk/pages/search.html', {
+        'termo': termo,
+        'resultados': resultados,
+    }) 
 
 def logout_view(request):
     logout(request)

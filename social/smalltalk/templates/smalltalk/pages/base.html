@@ -40,9 +40,12 @@
                 </g>
               </svg>
               <div class="relative flex grow">
-                <input id="search-input" oninput="toggleClearButton()" type="search" class="grow bg-none outline-0 border-0 text-white" placeholder="Pesquisar..." />
-                <button id="clear-btn" type="button" onclick="clearSearch()" class="text-xl text-amber-400 hidden border-none cursor-pointer absolute right-1 top-1/2 -translate-y-1/2 bg-transparent" style="
-              ">×</button>
+                <form class="flex grow max-w-136" method="post" action="{% url 'dashboard' %}">
+                  {% csrf_token %}
+                  {{ search_form.query }}
+                  <button class="hidden" type="submit" name="search">Buscar</button>
+                </form>
+                <button id="clear-btn" type="button" onclick="clearSearch()" class="text-xl text-amber-400 hidden border-none cursor-pointer absolute right-1 top-1/2 -translate-y-1/2 bg-transparent">×</button>
               </div>
             </label>
 

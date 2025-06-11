@@ -7,7 +7,17 @@ class Post(models.Model):
     content = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField('Tag', blank=True)
+    likes = models.ManyToManyField(User, related_name='post_like', blank=True)
+    shares = models.ManyToManyField(User, related_name='post_share', blank=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
+    def likes_counter(self):
+        return self.likes.count()
+    def shares_counter(self):
+        return self.shares.count()
+    
     def timetrack(self):
         delta = now() - self.created_at
         seconds = delta.total_seconds()
@@ -71,3 +81,4 @@ class Tag(models.Model):
         return Post.objects.filter(tags__name=self.name).count()
     def __str__(self):
         return f"#{self.name}"
+
