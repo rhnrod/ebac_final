@@ -134,6 +134,9 @@ def dashboard(request):
 
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    public_profiles = profiles.filter(is_public=True)
+    public_profiles_users = [profile.user for profile in public_profiles]
 
     seguindo = logged_user.follows.all()
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
@@ -142,8 +145,13 @@ def dashboard(request):
         Q(user__in=usuarios_seguidos) | Q(shares__in=usuarios_seguidos)
     ).distinct()
 
+    displayable_posts = posts.filter(
+        Q(user__in=public_profiles_users) |
+        Q(user__in=logged_follows_user) |
+        Q(user=request.user) |
+        Q(shares=request.user, user__in=logged_follows_user)
+    ).distinct()
     
-
     shared_posts = [post for post in posts if request.user in post.shares.all()]
     shared_follows = [post.user for post in shared_posts]
     shared_posts_count = len([post for post in posts if request.user in post.shares.all()])
@@ -151,12 +159,15 @@ def dashboard(request):
     context = {
         'super_user_date': super_user_date + " dias" if super_user_date != 1 else super_user_date + " dia",
         'profiles': profiles,
+        'public_profiles': public_profiles,
+        'public_profiles_users': public_profiles_users,
         'profile_data': request.user,
         'user': request.user,
         'logged_user': logged_user,
         'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
-        'logged_follows_user': [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)],
+        'logged_follows_user': logged_follows_user,
         'posts': posts,
+        'displayable_posts': displayable_posts,
         'shared_posts': shared_posts,
         'shared_follows': shared_follows,
         'shared_posts_count': shared_posts_count,
@@ -207,11 +218,21 @@ def profile(request, slug=None):
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
 
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    public_profiles = profiles.filter(is_public=True)
+    public_profiles_users = [profile.user for profile in public_profiles]
+    
     seguindo = logged_user.follows.all()
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
 
     posts = Post.objects.filter(
         Q(user__in=usuarios_seguidos) | Q(shares__in=usuarios_seguidos)
+    ).distinct()
+
+    displayable_posts = posts.filter(
+        Q(user=request.user) |
+        Q(shares=request.user, user__in=public_profiles_users) |
+        Q(shares=request.user, user__in=logged_follows_user)
     ).distinct()
 
     profile_posts = Post.objects.filter(user__username=slug).order_by('-created_at')
@@ -249,11 +270,14 @@ def profile(request, slug=None):
         'logged_user': logged_user,
         'profile_data': user_profile,
         'profile_posts': profile_posts,
+        'public_profiles': public_profiles,
+        'public_profiles_users': public_profiles_users,
         'super_user_date': super_user_date,
         'follow_you': logged_user.followed_by.all().exclude(id=logged_user.user.id),
         'subscribe': True,
         'aguardando': False,
         'posts': posts,
+        'displayable_posts': displayable_posts,
         'shared_posts': shared_posts,
         'shared_posts_count': shared_posts_count,
         'tags': Tag.objects.annotate(mentions=Count('post')).order_by('-mentions'),
