@@ -120,6 +120,21 @@
       </fieldset>
     </div>
   </div>
+
+  <!-- Modal Delete Post -->
+  <div id="modalDelete" class="fixed inset-0 items-center justify-center hidden z-50">
+    <!-- Fundo escuro com blur -->
+    <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+    <div id="modalDeleteContent" class="flex flex-col gap-2 z-50 bg-zinc-900 p-6 text-white rounded-lg shadow-lg w-full max-w-md">
+      <h3 class="text-xl font-bold">Atenção</h3>
+      <h4>Deseja realmente excluir este post?</h4>
+      <p class="text-sm text-zinc-400 mb-4">O processo de exclusão é irreversível. Uma vez que o post tenha sido excluído não é possível recuperá-lo.</p>
+      <div class="flex w-full justify-between gap-2">
+        <a id="closeDeleteBtn" class="btn grow bg-gray-600 text-white shadow-xs shadow-gray-700 border-gray-800">Não</a>
+        <a id="confirmDeleteBtn" class="btn grow bg-red-600 text-white shadow-xs shadow-red-700 border-red-800">Sim</a>
+      </div>
+    </div>
+  </div>
   <script>
     const input = document.getElementById('search-input')
     const clearBtn = document.getElementById('clear-btn')
@@ -243,6 +258,50 @@
       const el = document.activeElement
       el?.blur()
     }
+  </script>
+
+  <script>
+    const modalDelete = document.getElementById('modalDelete')
+    const modalDeleteContent = document.getElementById('modalDeleteContent')
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn')
+    const closeDeleteBtn = document.getElementById('closeDeleteBtn')
+    
+    // Seleciona todos os botões de deletar
+    const openBtns = document.querySelectorAll('.openModalDeleteBtn')
+    
+    openBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.activeElement.blur()
+    
+        const postId = btn.getAttribute('data-post-id')
+        // Monta a URL dinamicamente e injeta no botão "Sim"
+        confirmDeleteBtn.href = `/delete_post/${postId}` // ou use uma URL nomeada se preferir
+        // Exibe o modal
+        modalDelete.classList.add('flex')
+        modalDelete.classList.remove('hidden')
+      })
+    })
+    
+    closeDeleteBtn.addEventListener('click', (e) => {
+      modalDelete.classList.add('hidden')
+      modalDelete.classList.remove('flex')
+    })
+    
+    // Fechar modal ao clicar fora
+    modalDelete.addEventListener('click', (e) => {
+      if (!modalDeleteContent.contains(e.target)) {
+        modalDelete.classList.add('hidden')
+        modalDelete.classList.remove('flex')
+      }
+    })
+    
+    // Fechar com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modalDelete.classList.add('hidden')
+        modalDelete.classList.remove('flex')
+      }
+    })
   </script>
 
   {% if 'profile' in request.path or 'config' in request.path %}

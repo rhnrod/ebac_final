@@ -8,12 +8,12 @@
     <!-- Sidebar -->
     {% include 'smalltalk/partials/_leftbar.html' %}
     <!-- Main Feed -->
-    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4">
+    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4 no-scrollbar">
       <div class="card bg-base-100 relative rounded-md border-none outline-none bg-[#282828] p-2 h-36">
         <form method="POST">
           {% csrf_token %}
           {{ form.content }}
-          <div class="bg-zinc-600 absolute w-full bottom-0 left-0 p-2 flex justify-end">
+          <div class="bg-zinc-600 absolute w-full bottom-0 left-0 p-2 flex justify-between">
             {% comment %} <div class="flex gap-2">
               <a href="#">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-camera">
@@ -24,6 +24,14 @@
               </a>
               <a href="#"><p>Mais</p></a>
             </div> {% endcomment %}
+            <div class="inline-flex items-center font-bold text-xs">
+              Pressione&nbsp;
+              <span class="inline-flex items-center">
+                <kbd class="kbd kbd-sm bg-gray-500 text-gray-800 font-black">CTRL</kbd>&nbsp;+&nbsp;
+                <kbd class="kbd kbd-sm bg-gray-500 text-gray-800 font-black">ENTER</kbd>&nbsp;
+              </span>
+              para enviar
+            </div>
             <div class="flex gap-4 items-center">
               <p class="text-xs font-bold">
                 Caracters restantes: <span id="chars-count">255</span>

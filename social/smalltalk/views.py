@@ -226,12 +226,13 @@ def profile(request, slug=None):
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
 
     posts = Post.objects.filter(
-        Q(user__in=usuarios_seguidos) | Q(shares__in=usuarios_seguidos)
+        Q(user=request.user) | Q(shares__in=usuarios_seguidos)
     ).distinct()
 
     displayable_posts = posts.filter(
         Q(user=request.user) |
         Q(shares=request.user, user__in=public_profiles_users) |
+        Q(user__in=logged_follows_user) |
         Q(shares=request.user, user__in=logged_follows_user)
     ).distinct()
 
@@ -241,6 +242,13 @@ def profile(request, slug=None):
 
     pic_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=request.user.profile)
 
+    search_form = SearchForm(request.POST or None)
+
+    if request.method == 'POST' and 'search' in request.POST:
+        if search_form.is_valid():
+            termo = search_form.cleaned_data['query']
+            return redirect(f"{reverse('search')}?q={termo}")
+        
     if request.method == 'POST':
         if 'follow' in request.POST:
             action = request.POST['follow']
@@ -285,10 +293,9 @@ def profile(request, slug=None):
                             .filter(mentions__gt=0)
                             .order_by('-mentions')[:10],
         'pic_form': pic_form,
+        'search_form': search_form
     }
     return render(request, 'smalltalk/pages/profile.html', context)
-
-
 
 @login_required
 def whoswho(request, slug=None):
@@ -305,6 +312,13 @@ def whoswho(request, slug=None):
     user_profile = get_object_or_404(Profile, user__username=slug)
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
+
+    search_form = SearchForm(request.POST or None)
+
+    if request.method == 'POST' and 'search' in request.POST:
+        if search_form.is_valid():
+            termo = search_form.cleaned_data['query']
+            return redirect(f"{reverse('search')}?q={termo}")
 
     if request.method == 'POST':
         action = request.POST['follow']
@@ -333,6 +347,7 @@ def whoswho(request, slug=None):
         'filtered_tags': Tag.objects.annotate(mentions=Count('post'))
                             .filter(mentions__gt=0)
                             .order_by('-mentions')[:10],
+        'search_form': search_form
     }
     return render(request, 'smalltalk/pages/whoswho.html', context)
 
@@ -341,7 +356,7 @@ def delete_post(request, post_id=None):
     if User.objects.get(username=request.user.username) == Post.objects.get(id=post_id).user:
         post = get_object_or_404(Post, id=post_id)
         post.delete()
-        return redirect('dashboard')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 def config(request):
@@ -350,6 +365,13 @@ def config(request):
 
     # Formulário de imagem
     pic_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile)
+
+    search_form = SearchForm(request.POST or None)
+
+    if request.method == 'POST' and 'search' in request.POST:
+        if search_form.is_valid():
+            termo = search_form.cleaned_data['query']
+            return redirect(f"{reverse('search')}?q={termo}")
 
     if request.method == 'POST':
         # Atualiza dados básicos do usuário
@@ -393,18 +415,26 @@ def config(request):
         'logged_user': get_object_or_404(Profile, user__username=user.username),
         'form': ProfileForm(instance=profile),
         'pic_form': pic_form,
+        'search_form': search_form
     }
     return render(request, 'smalltalk/pages/config.html', context)
-
 
 @login_required
 def search(request, slug=None):
     termo = request.GET.get('q', '')
     resultados = Post.objects.filter(content__icontains=termo)
 
+    search_form = SearchForm(request.POST or None)
+
+    if request.method == 'POST' and 'search' in request.POST:
+        if search_form.is_valid():
+            termo = search_form.cleaned_data['query']
+            return redirect(f"{reverse('search')}?q={termo}")
+        
     return render(request, 'smalltalk/pages/search.html', {
         'termo': termo,
         'resultados': resultados,
+        'search_form': search_form
     }) 
 
 def logout_view(request):

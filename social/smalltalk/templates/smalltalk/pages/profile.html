@@ -13,7 +13,7 @@
     <!-- Sidebar -->
     {% include 'smalltalk/partials/_leftbar.html' %}
     <!-- Main Feed -->
-    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4">
+    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4 no-scrollbar">
       <div class="relative border-1 rounded-xl border-zinc-700 pb-2">
         <div class="rounded-t-xl h-1/2 -z-40 w-full cursor-pointer">
           {% if user.username == slug %}
@@ -33,7 +33,7 @@
             </div>
           {% endif %}
           {% if profile_data.cover_pic %}
-            <img src="{{ profile_data.cover_pic.url }}" class="rounded-t-xl max-h-[250px] min-w-full w-full max-w-full object-cover" alt="" />
+            <img src="{{ profile_data.cover_pic.url }}" class="rounded-t-xl min-h-[250px] max-h-[250px] min-w-full w-full max-w-full object-cover" alt="" />
           {% else %}
             <img src="/media/smalltalk/cover_pics/pattern_template.png" class="rounded-t-xl h-[250px] object-fit" alt="" />
           {% endif %}
