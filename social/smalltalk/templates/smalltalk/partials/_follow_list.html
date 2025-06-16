@@ -63,8 +63,17 @@
           </li>
         {% endfor %}
       {% else %}
-        <h3 class="font-bold text-sm">Você não está seguindo ninguém ainda.</h3>
-        <p class="text-xs text-zinc-500">Que tal usar a barra de pesquisa pra encontrar alguns amigos?</p>
+        {% if slug == request.user.username %}
+          <h3 class="font-bold text-sm">Você não está seguindo ninguém ainda.</h3>
+          <p class="text-xs text-zinc-500">Que tal usar a barra de pesquisa pra encontrar alguns amigos?</p>
+        {% else %}
+          {% if profile_data.first_name %}
+            <h3 class="font-bold text-sm">{{ profile_data.first_name|capfirst }} não está seguindo ninguém ainda.</h3>
+          {% else %}
+            <h3 class="font-bold text-sm">{{ profile_data.user.username|capfirst }} não está seguindo ninguém ainda.</h3>
+          {% endif %}
+          <p class="text-xs text-zinc-500">Ele parece ser do tipo misterioso. Algo assim. 🤔</p>
+        {% endif %}
       {% endif %}
     </ul>
     <!-- seguidores -->
@@ -131,8 +140,18 @@
           </li>
         {% endfor %}
       {% else %}
-        <h3 class="font-bold text-sm">Você não possui nenhum seguidor ainda.</h3>
-        <p class="text-xs text-zinc-500">Que tal interagir com alguns posts ou comunidades?</p>
+        {% if slug == request.user.username %}
+          <h3 class="font-bold text-sm">Você não possui nenhum seguidor ainda.</h3>
+          <p class="text-xs text-zinc-500">Que tal interagir com alguns posts ou comunidades?</p>
+        {% else %}
+          {% if profile_data.first_name %}
+            <h3 class="font-bold text-sm">{{ profile_data.first_name|capfirst }} não possui nenhum seguidor ainda.</h3>
+            <p class="text-xs text-zinc-500">Vai ver ele não é dos mais populares...</p>
+          {% else %}
+            <h3 class="font-bold text-sm">{{ profile_data.user.username|capfirst }} não possui nenhum seguidor ainda.</h3>
+            <p class="text-xs text-zinc-500">Vai ver ele não é dos mais populares...</p>
+          {% endif %}
+        {% endif %}
       {% endif %}
     </ul>
   </div>

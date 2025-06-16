@@ -1,3 +1,4 @@
+{% load mention_filters %}
 {% comment %}Verifica se está renderizado no perfil ou no dashboard{% endcomment %}
 {% if 'profile' in request.path %}
   {% if displayable_posts.count > 0 and profile_data.user in displayable_posts %}
@@ -66,7 +67,7 @@
           </div>
           <!-- post content -->
           <div class="mt-2">
-            <p class="wrap-break-word">{{ post.content }}</p>
+            <p class="wrap-break-word">{{ post.content|linkify_mentions:request|safe }}</p>
             <div class="flex mt-2 gap-2">
               {% for tag in post.tags.all %}
                 <a href="#" class="text-cyan-600">{{ tag }}</a>
@@ -123,8 +124,8 @@
         </div>
       {% endif %}
     {% endfor %}
-  {% elif posts.count > 0 and profile_data.user == request.user %}
-    {% for post in posts %}
+  {% elif displayable_posts.count > 0 and profile_data.user == request.user %}
+    {% for post in displayable_posts %}
       <div class="border-1 rounded-xl p-4 border-zinc-700">
         <div class="flex justify-between">
           <a class="flex gap-2 items-center" href="{% url 'profile' slug=post.user.username %}">
@@ -188,10 +189,10 @@
         </div>
         <!-- post content -->
         <div class="mt-2">
-          <p class="wrap-break-word">{{ post.content }}</p>
+          <p class="wrap-break-word">{{ post.content|linkify_mentions:request|safe }}</p>
           <div class="flex mt-2 gap-2">
             {% for tag in post.tags.all %}
-              <a href="#" class="text-cyan-600">{{ tag }}</a>
+              <a href="{% url 'search' %}?q={{ tag }}" class="text-cyan-600">#{{ tag }}</a>
             {% endfor %}
           </div>
           <div class="mt-2 flex gap-2">
@@ -310,10 +311,10 @@
           </div>
           <!-- post content -->
           <div class="mt-2">
-            <p class="wrap-break-word">{{ post.content }}</p>
+            <p class="wrap-break-word">{{ post.content|linkify_mentions:request|safe }}</p>
             <div class="flex mt-2 gap-2">
               {% for tag in post.tags.all %}
-                <a href="#" class="text-cyan-600">{{ tag }}</a>
+                <a href="{% url 'search' %}?q={{ tag }}" class="text-cyan-600">#{{ tag }}</a>
               {% endfor %}
             </div>
             <div class="mt-2 flex gap-2">
@@ -432,10 +433,10 @@
             </div>
             <!-- post content -->
             <div class="mt-2">
-              <p class="wrap-break-word">{{ post.content }}</p>
+              <p class="wrap-break-word">{{ post.content|linkify_mentions:request|safe }}</p>
               <div class="flex mt-2 gap-2">
                 {% for tag in post.tags.all %}
-                  <a href="#" class="text-cyan-600">{{ tag }}</a>
+                  <a href="{% url 'search' %}?q={{ tag }}" class="text-cyan-600">#{{ tag }}</a>
                 {% endfor %}
               </div>
               <div class="mt-2 flex gap-2">
@@ -490,7 +491,12 @@
         {% endfor %}
       {% else %}
         <div class="p-8">
-          <h2 class="font-bold text-xl">Este usuário ainda não postou nada.</h2>
+          {% if profile_data.user in public_profiles_users %}
+            <h2 class="font-bold text-xl">Este usuário ainda não postou nada.</h2>
+          {% else %}
+            <h2 class="font-bold text-xl">Este usuário possui o perfil privado.</h2>
+            <p class="text-sm text-zinc-500">Envie uma solicitação para seguí-lo. Caso ele aceite, você poderá visualizar seus posts.</p>
+          {% endif %}
         </div>
       {% endif %}
     {% else %}
@@ -579,10 +585,10 @@
           </div>
           <!-- post content -->
           <div class="mt-2">
-            <p class="wrap-break-word">{{ post.content }}</p>
+            <p class="wrap-break-word">{{ post.content|linkify_mentions:request|safe }}</p>
             <div class="flex mt-2 gap-2">
               {% for tag in post.tags.all %}
-                <a href="#" class="text-cyan-600">{{ tag }}</a>
+                <a href="{% url 'search' %}?q={{ tag }}" class="text-cyan-600">#{{ tag }}</a>
               {% endfor %}
             </div>
             <div class="mt-2 flex gap-2">
@@ -698,10 +704,10 @@
           </div>
           <!-- post content -->
           <div class="mt-2">
-            <p class="wrap-break-word">{{ post.content }}</p>
+            <p class="wrap-break-word">{{ post.content|linkify_mentions:request|safe }}</p>
             <div class="flex mt-2 gap-2">
               {% for tag in post.tags.all %}
-                <a href="#" class="text-cyan-600">{{ tag }}</a>
+                <a href="{% url 'search' %}?q={{ tag }}" class="text-cyan-600">#{{ tag }}</a>
               {% endfor %}
             </div>
             <div class="mt-2 flex gap-2">

@@ -3,7 +3,7 @@
     <h3 class="font-semibold mb-2">Assuntos do Momento</h3>
     <div class="flex flex-wrap gap-2 text-xs text-gray-400">
       {% for tag in filtered_tags %}
-        <span class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">{{ tag }}</span>
+        <a href="{% url 'search' %}?q={{ tag }}" class="bg-gray-800 px-2 py-1 rounded cursor-pointer hover:bg-gray-700">#{{ tag }}</a>
       {% endfor %}
     </div>
   </div>
@@ -16,7 +16,7 @@
         <button class="text-xs font-bold px-2 py-1 bg-amber-400/20 text-amber-400 rounded-sm cursor-pointer hover:bg-amber-400/50">Mais curtido</button>
       </li>
       <li class="flex justify-between">
-        <span>Perlpeixty AI</span>
+        <span>Perplexity AI</span>
         <button class="text-xs font-bold px-2 py-1 rounded-sm cursor-pointer bg-cyan-400/20 text-cyan-400 hover:bg-cyan-400/50">Mais comentado</button>
       </li>
       <li class="flex justify-between">
@@ -37,7 +37,7 @@
     </div>
     <ul class="space-y-5">
       {% for profile in profiles %}
-        {% if not profile in logged_follows %}
+        {% if profile in not_known_users %}
           <li class="flex justify-between w-full">
             <div class="flex justify-between w-full gap-2 items-center">
               <a href="{% url 'profile' slug=profile.user.username %}" class="flex gap-2 items-center">

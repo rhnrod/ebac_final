@@ -43,9 +43,10 @@ def register(request):
         'hide_header': True,
         'subscribe': True,
         'password_pattern': r'(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
-        'username_pattern': r'^[a-zA-Z]\w+$'
+        'username_pattern': r'^[a-z]\w+$'
     }
     return render(request, 'smalltalk/pages/register.html', context)
+
 
 def login_view(request, slug=None):
     if request.user.is_authenticated:
@@ -101,6 +102,7 @@ def dashboard(request):
 
                 # Extrai hashtags
                 hashtags = re.findall(r'#\w+', post.content)
+                mentions = re.findall(r'@\w+', post.content)
 
                 # Remove o símbolo '#' do texto
                 for tag in hashtags:
@@ -132,11 +134,17 @@ def dashboard(request):
     data_base = date(2025, 5, 27)
     super_user_date = str((data_atual - data_base).days)
 
-    logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
     logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
     public_profiles = profiles.filter(is_public=True)
     public_profiles_users = [profile.user for profile in public_profiles]
+
+    logged_follows = logged_user.follows.exclude(user__id=logged_user.user.id)
+    not_known_users = list(profiles.exclude(user__in=logged_follows_user))
+    random.shuffle(not_known_users)
+
+    not_known_users = not_known_users[:4]
 
     seguindo = logged_user.follows.all()
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
@@ -164,8 +172,9 @@ def dashboard(request):
         'profile_data': request.user,
         'user': request.user,
         'logged_user': logged_user,
-        'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
+        'logged_follows': logged_follows,
         'logged_follows_user': logged_follows_user,
+        'not_known_users': not_known_users,
         'posts': posts,
         'displayable_posts': displayable_posts,
         'shared_posts': shared_posts,
@@ -224,6 +233,8 @@ def profile(request, slug=None):
     
     seguindo = logged_user.follows.all()
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
+    third_follows = user_profile.follows.all()
+    third_follows_users = [perfil.user for perfil in third_follows.exclude(user__id=user_profile.user.id)]
 
     posts = Post.objects.filter(
         Q(user=request.user) | Q(shares__in=usuarios_seguidos)
@@ -232,11 +243,13 @@ def profile(request, slug=None):
     displayable_posts = posts.filter(
         Q(user=request.user) |
         Q(shares=request.user, user__in=public_profiles_users) |
-        Q(user__in=logged_follows_user) |
         Q(shares=request.user, user__in=logged_follows_user)
     ).distinct()
 
-    profile_posts = Post.objects.filter(user__username=slug).order_by('-created_at')
+    profile_posts = Post.objects.filter(
+        Q(user__username=slug) |
+        Q(shares=user_profile.user, user__in=third_follows_users)
+        ).distinct().order_by('-created_at')
     shared_posts = [post.user for post in posts if request.user in post.shares.all()]
     shared_posts_count = len([post for post in posts if request.user in post.shares.all()])
 
@@ -276,6 +289,8 @@ def profile(request, slug=None):
         'logged_follows_user': [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)],
         'followers': user_profile.followed_by.exclude(user__id=user_profile.user.id),
         'logged_user': logged_user,
+        'third_follows': third_follows,
+        'third_follows_users': third_follows_users,
         'profile_data': user_profile,
         'profile_posts': profile_posts,
         'public_profiles': public_profiles,
@@ -422,7 +437,29 @@ def config(request):
 @login_required
 def search(request, slug=None):
     termo = request.GET.get('q', '')
-    resultados = Post.objects.filter(content__icontains=termo)
+    termo_mention = f'@{termo}'
+    termo_tag = f'#{termo}'
+
+
+    profiles = Profile.objects.all().exclude(user=request.user)
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    public_profiles = profiles.filter(is_public=True)
+    public_profiles_users = [profile.user for profile in public_profiles]
+    
+
+    public_posts = Post.objects.filter(
+        Q(user__in=logged_follows_user) |
+        Q(user__in=public_profiles_users)
+        ).order_by('-created_at')
+    
+    resultados = public_posts.filter(
+        Q(content__icontains=termo) |
+        Q(content__icontains=termo_mention) |
+        Q(content__icontains=termo_tag)
+        ).order_by('-created_at')
+    
+    resultados_perfis = profiles.filter(user__username__icontains=termo)[:3]
 
     search_form = SearchForm(request.POST or None)
 
@@ -434,9 +471,34 @@ def search(request, slug=None):
     return render(request, 'smalltalk/pages/search.html', {
         'termo': termo,
         'resultados': resultados,
-        'search_form': search_form
+        'resultados_perfis': resultados_perfis,
+        'search_form': search_form,
+        'profiles': profiles,
+        'logged_user': logged_user,
+        'follow_you': logged_user.followed_by.all().exclude(id=logged_user.user.id),
+        'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
+        'logged_follows_user': logged_follows_user,
+        'public_profiles': public_profiles,
+        'public_profiles_users': public_profiles_users,
+        'public_posts': public_posts
     }) 
 
+def handling_404(request, exception=None):
+    status=404
+
+    search_form = SearchForm(request.POST or None)
+
+    if request.method == 'POST' and 'search' in request.POST:
+        if search_form.is_valid():
+            termo = search_form.cleaned_data['query']
+            return redirect(f"{reverse('search')}?q={termo}")
+
+
+
+    return render(request, 'smalltalk/pages/404.html', {
+        'status': status,
+        'search_form': search_form,
+    })
 def logout_view(request):
     logout(request)
     return redirect('login')
