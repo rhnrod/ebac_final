@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.utils.timezone import localtime, now
 
@@ -65,16 +65,14 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username + " - " + self.user.email
 
-    # Create a new profile when a new user is created
-    def create_profile(sender, instance, created, **kwargs):
-        if created:
-            user_profile = Profile(user=instance)
-            user_profile.save()
-            # auto follow itself
-            user_profile.follows.set([user_profile.id])  
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        with transaction.atomic():
+            # Check if profile already exists
+            if not hasattr(instance, 'profile'):
+                Profile.objects.create(user=instance)
 
-
-    post_save.connect(create_profile, sender=User)
+post_save.connect(create_profile, sender=User)
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)

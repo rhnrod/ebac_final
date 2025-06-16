@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -32,9 +33,24 @@ def register(request):
         confirm_password = request.POST.get('confirm-password')
 
         if password == confirm_password:
-            user = User.objects.create_user(username=username, email=email, password=password)
-            login(request, user)
-            return redirect('dashboard')
+            # Check if username already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Este nome de usuário já está em uso.')
+                return redirect('register')
+            
+            # Check if email already exists
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'Este email já está em uso.')
+                return redirect('register')
+
+            try:
+                with transaction.atomic():
+                    user = User.objects.create_user(username=username, email=email, password=password)
+                    login(request, user)
+                    return redirect('dashboard')
+            except Exception as e:
+                messages.error(request, 'Erro ao criar usuário. Por favor, tente novamente.')
+                return redirect('register')
         else:
             messages.error(request, 'As senhas devem ser iguais.')
             return redirect('register')
