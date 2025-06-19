@@ -151,11 +151,11 @@ def dashboard(request):
     super_user_date = str((data_atual - data_base).days)
 
     profiles = Profile.objects.all().exclude(user=request.user)
-    logged_user = get_object_or_404(Profile, user__username=request.user.username)
-    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
     public_profiles = profiles.filter(is_public=True)
     public_profiles_users = [profile.user for profile in public_profiles]
 
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
     logged_follows = logged_user.follows.exclude(user__id=logged_user.user.id)
     not_known_users = list(profiles.exclude(user__in=logged_follows_user))
     random.shuffle(not_known_users)
@@ -240,12 +240,18 @@ def profile(request, slug=None):
         return redirect('profile', slug=request.user.username)
 
     user_profile = get_object_or_404(Profile, user__username=slug)
-    logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
 
-    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
     public_profiles = profiles.filter(is_public=True)
     public_profiles_users = [profile.user for profile in public_profiles]
+
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
+    logged_follows = logged_user.follows.exclude(user__id=logged_user.user.id)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    not_known_users = list(profiles.exclude(user__in=logged_follows_user))
+    random.shuffle(not_known_users)
+
+    not_known_users = not_known_users[:4]
     
     seguindo = logged_user.follows.all()
     usuarios_seguidos = [perfil.user for perfil in seguindo] + [request.user]
@@ -315,6 +321,7 @@ def profile(request, slug=None):
         'follow_you': logged_user.followed_by.all().exclude(id=logged_user.user.id),
         'subscribe': True,
         'aguardando': False,
+        'not_known_users': not_known_users,
         'posts': posts,
         'displayable_posts': displayable_posts,
         'shared_posts': shared_posts,
@@ -344,6 +351,14 @@ def whoswho(request, slug=None):
     logged_user = get_object_or_404(Profile, user__username=request.user.username)
     profiles = Profile.objects.all().exclude(user=request.user)
 
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
+    logged_follows = logged_user.follows.exclude(user__id=logged_user.user.id)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    not_known_users = list(profiles.exclude(user__in=logged_follows_user))
+    random.shuffle(not_known_users)
+
+    not_known_users = not_known_users[:4]
+
     search_form = SearchForm(request.POST or None)
 
     if request.method == 'POST' and 'search' in request.POST:
@@ -369,6 +384,7 @@ def whoswho(request, slug=None):
         'followers': user_profile.followed_by.exclude(user__id=user_profile.user.id),
         'logged_user': logged_user,
         'profile_data': user_profile,
+        'not_known_users': not_known_users,
         'super_user_date': super_user_date,
         'follow_you': logged_user.followed_by.all().exclude(id=logged_user.user.id),
         'subscribe': True,
@@ -394,6 +410,16 @@ def config(request):
     user = request.user
     profile = user.profile
 
+    profiles = Profile.objects.all().exclude(user=request.user)
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
+    logged_follows = logged_user.follows.exclude(user__id=logged_user.user.id)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    not_known_users = list(profiles.exclude(user__in=logged_follows_user))
+    random.shuffle(not_known_users)
+
+    not_known_users = not_known_users[:4]
+
+
     # Formulário de imagem
     pic_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile)
 
@@ -411,6 +437,7 @@ def config(request):
         description = request.POST.get('description', '').strip()
         location = request.POST.get('location', '').strip()
         is_public = request.POST.get('is_public') == 'on'
+
 
         if username:
             user.username = username
@@ -443,6 +470,8 @@ def config(request):
         'config_description': profile.description or '',
         'config_location': profile.location or '',
         'config_is_public': profile.is_public,
+        'not_known_users': not_known_users,
+        'profiles': profiles,
         'logged_user': get_object_or_404(Profile, user__username=user.username),
         'form': ProfileForm(instance=profile),
         'pic_form': pic_form,
@@ -462,6 +491,14 @@ def search(request, slug=None):
     logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
     public_profiles = profiles.filter(is_public=True)
     public_profiles_users = [profile.user for profile in public_profiles]
+
+    logged_user = get_object_or_404(Profile, user__username=request.user.username)
+    logged_follows = logged_user.follows.exclude(user__id=logged_user.user.id)
+    logged_follows_user = [follow.user for follow in logged_user.follows.exclude(user__id=logged_user.user.id)]
+    not_known_users = list(profiles.exclude(user__in=logged_follows_user))
+    random.shuffle(not_known_users)
+
+    not_known_users = not_known_users[:4]
     
 
     public_posts = Post.objects.filter(
@@ -491,6 +528,7 @@ def search(request, slug=None):
         'search_form': search_form,
         'profiles': profiles,
         'logged_user': logged_user,
+        'not_known_users': not_known_users,
         'follow_you': logged_user.followed_by.all().exclude(id=logged_user.user.id),
         'logged_follows': logged_user.follows.exclude(user__id=logged_user.user.id),
         'logged_follows_user': logged_follows_user,
