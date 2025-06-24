@@ -29,7 +29,7 @@
           {% if logged_user.cover_pic %}
             <img src="{{ logged_user.cover_pic.url }}" class="rounded-t-xl min-h-[100px] max-h-[100px] md:min-h-[270px] md:max-h-[270px] min-w-full w-full max-w-full object-cover" alt="" />
           {% else %}
-            <img src="{{ static('pattern_template.png') }}" class="rounded-t-xl h-[100px] md:h-[250px] object-cover" alt="" />
+            <img src="{% static 'pattern_template.png' %}" class="rounded-t-xl h-[100px] md:h-[250px] object-cover" alt="" />
           {% endif %}
           <div class="flex items-center justify-center">
             <button class="bg-black/35 cursor-pointer flex justify-center items-center absolute top:16 left-4 md:top-54 md:left-8 rounded-full z-50 w-[70px] h-[70px] md:w-[100px] md:h-[100px]" id="openModal">
