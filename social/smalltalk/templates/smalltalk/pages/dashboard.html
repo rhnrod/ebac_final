@@ -1,0 +1,55 @@
+{% extends 'smalltalk/pages/base.html' %}
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block content %}
+  <div class="flex justify-between h-11/12">
+    <!-- Sidebar -->
+    {% include 'smalltalk/partials/_leftbar.html' %}
+    <!-- Main Feed -->
+    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4 no-scrollbar">
+      <div class="card bg-base-100 relative rounded-md border-none outline-none bg-[#282828] p-2 h-36">
+        <form method="POST">
+          {% csrf_token %}
+          {{ form.content }}
+          <div class="bg-zinc-600 absolute w-full bottom-0 left-0 p-2 flex justify-end lg:justify-between">
+            {% comment %} <div class="flex gap-2">
+              <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-camera">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
+                  <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                </svg>
+              </a>
+              <a href="#"><p>Mais</p></a>
+            </div> {% endcomment %}
+            <div class="hidden lg:inline-flex items-center font-bold text-xs">
+              Pressione&nbsp;
+              <span class="inline-flex items-center">
+                <kbd class="kbd kbd-sm bg-gray-500 text-gray-800 font-black">CTRL</kbd>&nbsp;+&nbsp;
+                <kbd class="kbd kbd-sm bg-gray-500 text-gray-800 font-black">ENTER</kbd>&nbsp;
+              </span>
+              para enviar
+            </div>
+            <div class="flex gap-4 items-center">
+              <p class="text-xs font-bold">
+                Caracters restantes: <span id="chars-count">255</span>
+              </p>
+              <button id="send-button" value="create" name="posts" class="cursor-pointer opacity-50" onclick="testClick()" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-location">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      {% include 'smalltalk/partials/_post_list.html' %}
+    </main>
+
+    <!-- Right Sidebar -->
+    {% include 'smalltalk/partials/_rightbar.html' %}
+  </div>
+{% endblock %}

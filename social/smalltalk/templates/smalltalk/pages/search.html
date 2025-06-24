@@ -1,0 +1,130 @@
+{% extends 'smalltalk/pages/base.html' %}
+{% load mention_filters %}
+
+{% block title %}
+  Pesquisando...
+{% endblock %}
+
+{% block content %}
+  <div class="flex justify-between h-11/12">
+    <!-- Sidebar -->
+    {% include 'smalltalk/partials/_leftbar.html' %}
+
+    <!-- Main Feed -->
+    <main id="scroll-mid" class="flex-1 p-6 overflow-y-auto space-y-4">
+      <h2 class="text-2xl">Você pesquisou por "{{ termo }}"...</h2>
+
+      {% if resultados_perfis.count > 0 or resultados.count > 0 %}
+        <h3 class="text-xl">Resultados para Perfis de Usuários</h3>
+        <ul class="flex items-center">
+          {% if resultados_perfis.count > 0 %}
+            {% for profile in resultados_perfis %}
+              <li class="my-4">
+                <a href="{% url 'profile' slug=profile.user.username %}">
+                  <div class="flex gap-2 items-center w-80 cursor-pointer">
+                    {% if profile.profile_pic %}
+                      <img width="40" height="40" class="rounded-full" src="{{ profile.profile_pic.url }}" />
+                    {% else %}
+                      <img width="40" height="40" class="rounded-full" src="https://api.dicebear.com/9.x/thumbs/svg?seed={{ profile.user.username }}" />
+                    {% endif %}
+                    <div class="flex flex-col">
+                      {% if profile.first_name %}
+                        <div class="flex gap-2 items-center">
+                          <p>{{ profile.first_name }}</p>
+                          {% if not profile.is_public %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-lock-square-rounded">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                              <path d="M12 2c-.218 0 -.432 .002 -.642 .005l-.616 .017l-.299 .013l-.579 .034l-.553 .046c-4.785 .464 -6.732 2.411 -7.196 7.196l-.046 .553l-.034 .579c-.005 .098 -.01 .198 -.013 .299l-.017 .616l-.004 .318l-.001 .324c0 .218 .002 .432 .005 .642l.017 .616l.013 .299l.034 .579l.046 .553c.464 4.785 2.411 6.732 7.196 7.196l.553 .046l.579 .034c.098 .005 .198 .01 .299 .013l.616 .017l.642 .005l.642 -.005l.616 -.017l.299 -.013l.579 -.034l.553 -.046c4.785 -.464 6.732 -2.411 7.196 -7.196l.046 -.553l.034 -.579c.005 -.098 .01 -.198 .013 -.299l.017 -.616l.005 -.642l-.005 -.642l-.017 -.616l-.013 -.299l-.034 -.579l-.046 -.553c-.464 -4.785 -2.411 -6.732 -7.196 -7.196l-.553 -.046l-.579 -.034a28.058 28.058 0 0 0 -.299 -.013l-.616 -.017l-.318 -.004l-.324 -.001zm0 4a3 3 0 0 1 2.995 2.824l.005 .176v1a2 2 0 0 1 1.995 1.85l.005 .15v3a2 2 0 0 1 -1.85 1.995l-.15 .005h-6a2 2 0 0 1 -1.995 -1.85l-.005 -.15v-3a2 2 0 0 1 1.85 -1.995l.15 -.005v-1a3 3 0 0 1 3 -3zm3 6h-6v3h6v-3zm-3 -4a1 1 0 0 0 -.993 .883l-.007 .117v1h2v-1a1 1 0 0 0 -1 -1z" fill="currentColor" stroke-width="0" />
+                            </svg>
+                          {% endif %}
+                          {% if profile in follow_you %}
+                            <div class="badge badge-xs font-bold bg-zinc-500/20 border-none text-zinc-500">Segue você</div>
+                          {% endif %}
+                        </div>
+                      {% else %}
+                        <div class="flex gap-2 items-center">
+                          <p>{{ profile.user.username|capfirst }}</p>
+                          {% if not profile.is_public %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-lock-square-rounded">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                              <path d="M12 2c-.218 0 -.432 .002 -.642 .005l-.616 .017l-.299 .013l-.579 .034l-.553 .046c-4.785 .464 -6.732 2.411 -7.196 7.196l-.046 .553l-.034 .579c-.005 .098 -.01 .198 -.013 .299l-.017 .616l-.004 .318l-.001 .324c0 .218 .002 .432 .005 .642l.017 .616l.013 .299l.034 .579l.046 .553c.464 4.785 2.411 6.732 7.196 7.196l.553 .046l.579 .034c.098 .005 .198 .01 .299 .013l.616 .017l.642 .005l.642 -.005l.616 -.017l.299 -.013l.579 -.034l.553 -.046c4.785 -.464 6.732 -2.411 7.196 -7.196l.046 -.553l.034 -.579c.005 -.098 .01 -.198 .013 -.299l.017 -.616l.005 -.642l-.005 -.642l-.017 -.616l-.013 -.299l-.034 -.579l-.046 -.553c-.464 -4.785 -2.411 -6.732 -7.196 -7.196l-.553 -.046l-.579 -.034a28.058 28.058 0 0 0 -.299 -.013l-.616 -.017l-.318 -.004l-.324 -.001zm0 4a3 3 0 0 1 2.995 2.824l.005 .176v1a2 2 0 0 1 1.995 1.85l.005 .15v3a2 2 0 0 1 -1.85 1.995l-.15 .005h-6a2 2 0 0 1 -1.995 -1.85l-.005 -.15v-3a2 2 0 0 1 1.85 -1.995l.15 -.005v-1a3 3 0 0 1 3 -3zm3 6h-6v3h6v-3zm-3 -4a1 1 0 0 0 -.993 .883l-.007 .117v1h2v-1a1 1 0 0 0 -1 -1z" fill="currentColor" stroke-width="0" />
+                            </svg>
+                          {% endif %}
+                          {% if profile in follow_you %}
+                            <div class="badge badge-xs font-bold bg-zinc-500/20 border-none text-zinc-500">Segue você</div>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                      {% if profile.description %}
+                        <p class="text-xs text-neutral-500">{{ profile.description }}</p>
+                      {% endif %}
+                      <div class="flex gap-2">
+                        <p>
+                          <span class="font-bold">{{ profile.following_count }}</span> <span class="text-sm text-zinc-500">Seguindo</span>
+                        </p>
+                        {% if profile.followers_count != 1 %}
+                          <p>
+                            <span class="font-bold">{{ profile.followers_count }}</span> <span class="text-sm text-zinc-500">Seguidores</span>
+                          </p>
+                        {% else %}
+                          <p>
+                            <span class="font-bold">{{ profile.followers_count }}</span> <span class="text-sm text-zinc-500">Seguidor</span>
+                          </p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            {% endfor %}
+            <div class="divider before:bg-zinc-700 after:bg-zinc-700 m-0 my-2"></div>
+          {% else %}
+            <h3>Nenhum perfil encontrado.</h3>
+            <div class="divider before:bg-zinc-700 after:bg-zinc-700 m-0 my-2"></div>
+          {% endif %}
+        </ul>
+        {% if resultados_perfis.count > 3 %}
+          <div class="join grid grid-cols-2 font-bold">
+            <button class="join-item btn btn-outline">Resultados anteriores</button>
+            <button class="join-item btn btn-outline">Próximos resultados</button>
+          </div>
+        {% endif %}
+        {% if resultados.count > 0 %}
+          <h3 class="text-xl">Resultados para Posts</h3>
+          <ul class="flex flex-col gap-2 overflow-y-scroll">
+            {% for resultado in resultados %}
+              <div class="chat chat-start">
+                <div class="chat-image avatar">
+                  <div class="w-10 rounded-full">
+                    {% if resultado.user.profile.profile_pic %}
+                      <img src="{{ resultado.user.profile.profile_pic.url }}" />
+                    {% else %}
+                      <img src="https://api.dicebear.com/9.x/thumbs/svg?seed={{ resultado.user.username }}" />
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="chat-header">
+                  @{{ resultado.user.username }}
+                  <time class="text-xs opacity-50">{{ resultado.timetrack }}</time>
+                </div>
+                <div class="chat-bubble">{{ resultado.content|linkify_mentions:request|safe }}</div>
+                {% if resutaldo.user.profile in follow_you %}
+                  <div class="chat-footer opacity-50">Segue você</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <h3>Nenhum post encontrado.</h3>
+        {% endif %}
+      {% else %}
+        <h3 class="text-xl">...mas parece que sua pesquisa deu com os burros n'água. 🤷</h3>
+        <p class="text-neutral-500">Tenta novamente, tá? Às vezes é só uma vírgula. rs :)</p>
+      {% endif %}
+    </main>
+
+    <!-- Right Sidebar -->
+
+    {% include 'smalltalk/partials/_rightbar.html' %}
+  </div>
+{% endblock %}

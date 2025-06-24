@@ -1,0 +1,29 @@
+{% extends 'smalltalk/pages/base.html' %}
+
+{% block title %}
+  {% if profile_data.first_name %}
+    {{ profile_data.first_name }} (@{{ profile_data.user.username }})
+  {% else %}
+    {{ profile_data.user.username|capfirst }} (@{{ profile_data.user.username }})
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="flex justify-between h-11/12">
+    <!-- Sidebar -->
+    {% include 'smalltalk/partials/_leftbar.html' %}
+    <!-- Main Feed -->
+    <main id="scroll-mid" class="flex-1 p-2 md:p-6 overflow-y-auto space-y-4">
+      <div>
+        {% if profile_data.first_name %}
+          <h1 class="text-2xl font-bold p-2">Pessoas ligadas a {{ profile_data.first_name }}</h1>
+        {% else %}
+          <h1 class="text-2xl font-bold p-2">Pessoas ligadas a {{ profile_data.user.username|capfirst }}</h1>
+        {% endif %}
+        {% include 'smalltalk/partials/_follow_list.html' %}
+      </div>
+    </main>
+    <!-- Right Sidebar -->
+    {% include 'smalltalk/partials/_rightbar.html' %}
+  </div>
+{% endblock %}

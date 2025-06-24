@@ -1,0 +1,40 @@
+{% extends 'smalltalk/pages/base.html' %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{% block content %}
+  <div class="bg-pattern h-screen w-screen relative text-black">
+    <div class="md:absolute md:top-0 md:right-0 card card-side bg-base-100 rounded-none lg:w-1/4 md:w-90 lg:min-w-90 sm:w-full h-full shadow-sm flex-col justify-center items-center noto-sans bg-[rgba(255,255,255,0.8)] md:bg-white">
+      <h1 class="text-xl font-bold">SmallTalk<span class="animate-ping">_</span></h1>
+
+      <form action="/login" method="post">
+        {% csrf_token %}
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+          <legend class="fieldset-legend">Login</legend>
+
+          <label class="label">Usuário</label>
+          <input type="text" class="input" name="username" />
+
+          <label class="label">Senha</label>
+          <input type="password" class="input" name="password" />
+
+          <button type="submit" class="btn btn-primary mt-4">Login</button>
+          <div class="text-sm mt-2 flex justify-center">
+            <p>
+              Não possui uma conta? Crie uma <a href="{% url 'register' %}" class="underline font-bold">aqui</a>.
+            </p>
+          </div>
+        </fieldset>
+      </form>
+      <div class="absolute bottom-48 right-0 container text-center font-bold text-red-600 text-sm">
+        {% if messages %}
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

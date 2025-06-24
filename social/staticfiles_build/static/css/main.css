@@ -1,0 +1,76 @@
+@import 'tailwindcss';
+
+.noto-sans {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.bg-pattern {
+    background-image: url('../bg-pattern.jpg');
+    background-repeat: repeat;
+    animation: slide-diagonal 180s linear infinite;
+}
+
+.bg-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+@keyframes slide-diagonal {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+
+.profile-pic {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.profile-pic svg {
+    opacity: 0;
+}
+
+.profile-pic:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.profile-pic:hover svg {
+    opacity: 1;
+}
+
+.photo-cover > div > div {
+    opacity: 0;
+}
+
+.photo-cover svg {
+    opacity: 0;
+}
+
+.photo-cover:hover svg {
+    opacity: 1;
+}
+
+.no-scrollbar {
+  overflow: auto; /* ou scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

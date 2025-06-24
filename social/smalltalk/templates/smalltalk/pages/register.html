@@ -1,0 +1,67 @@
+{% extends 'smalltalk/pages/base.html' %}
+
+{% block title %}
+  Cadastrar
+{% endblock %}
+
+{% block content %}
+  <div class="bg-pattern h-screen w-screen relative text-black">
+    <div class="md:absolute md:top-0 md:right-0 card card-side bg-base-100 rounded-none lg:w-1/4 md:w-90 lg:min-w-90 sm:w-full h-full shadow-sm flex-col justify-center items-center noto-sans bg-[rgba(255,255,255,0.8)] md:bg-white">
+      <div class="absolute top-10 right-10 text-center mt-10 mr-6 font-bold text-sm">
+        {% if messages %}
+          {% for message in messages %}
+            <div role="alert" class="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-exclamation-circle">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                <path d="M12 9v4" />
+                <path d="M12 16v.01" />
+              </svg>
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <h1 class="text-xl font-bold">SmallTalk<span class="animate-ping">_</span></h1>
+
+      <form action="register" method="post">
+        {% csrf_token %}
+        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+          <legend class="fieldset-legend">Novo usuário</legend>
+
+          <label class="label">Usuário</label>
+          <input required type="text" class="input validator" pattern="{{ username_pattern }}" name="username" minlength="3" maxlength="18" title="Somente letras, números ou _" />
+          <p class="validator-hint hidden">Deve conter de 3 a 18 dígitos, iniciando com uma letra e contendo apenas letras minúsculas, números ou _ (underscore)</p>
+
+          <label class="label">E-mail</label>
+          <input required type="email" class="input validator" name="email" />
+          <div class="validator-hint hidden">Digite um email válido.</div>
+
+          <label class="label">Senha</label>
+          <input required name="password" pattern="{{ password_pattern }}" type="password" class="input validator" minlength="8" title="Deve conter no mínimo 8 caracteres, sendo pelo menos um número, uma letra minúscula e uma letra maiúscula" />
+          <p class="validator-hint hidden">
+            Deve conter no mínimo 8 caracteres, sendo:
+            <br />• pelo menos um número,
+            <br />• uma letra minúscula e
+            <br />• uma letra maiúscula
+          </p>
+
+          <label class="label">Senha</label>
+          <input required name="confirm-password" pattern="{{ password_pattern }}" type="password" class="input validator" minlength="8" title="Deve conter no mínimo 8 caracteres, sendo pelo menos um número, uma letra minúscula e uma letra maiúscula" />
+          <p class="validator-hint hidden">
+            Deve conter no mínimo 8 caracteres, sendo:
+            <br />• pelo menos um número,
+            <br />• uma letra minúscula e
+            <br />• uma letra maiúscula
+          </p>
+          <button type="submit" class="btn btn-neutral mt-4">Criar conta</button>
+        </fieldset>
+      </form>
+      <div class="text-sm mt-2">
+        <p>
+          Já possui uma conta? Faça <a href="{% url 'login' %}" class="text-cyan-700 font-bold">login</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,355 @@
+{% load static %}
+{% load mention_filters %}
+
+<!DOCTYPE html>
+<html id="html-root" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="/static/js/checkPlatform.js"></script>
+    <script src="/static/js/util.js"></script>
+
+    <title>
+      {% block title %}
+
+      {% endblock %}
+    </title>
+  </head>
+  <body class="select-none">
+    <div class="@container">
+      <div class="bg-zinc-900 text-white noto-sans h-screen">
+        {% if not hide_header %}
+          <header class="p-1 flex h-1/12 items-center justify-between border-b-1 border-zinc-700">
+            <a href="{% url 'dashboard' %}">
+              <h1 class="text-xl font-bold md:w-60 ml-4">
+                SmallTalk
+                <span class="animate-ping">_</span>
+              </h1>
+            </a>
+            <label class="input bg-transparent flex-1 outline-0 border-none shadow-none focus-within:outline-0">
+              <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </g>
+              </svg>
+              <div class="relative flex grow">
+                <form class="flex grow max-w-48 md:max-w-136" method="post" action="{% url 'dashboard' %}">
+                  {% csrf_token %}
+                  {{ search_form.query }}
+                  <button class="hidden" type="submit" name="search">Buscar</button>
+                </form>
+                <button id="clear-btn" type="button" onclick="clearSearch()" class="text-xl text-amber-400 hidden border-none cursor-pointer absolute right-1 top-1/2 -translate-y-1/2 bg-transparent">×</button>
+              </div>
+            </label>
+
+            <div id="macOnly" class="hidden">
+              <kbd class="macOnly kbd kbd-sm bg-gray-500 text-gray-800 font-black">⌘</kbd>
+              <kbd class="macOnly kbd kbd-sm bg-gray-500 text-gray-800 font-black">SHIFT</kbd>
+              <kbd class="macOnly kbd kbd-sm bg-gray-500 text-gray-800 font-black">K</kbd>
+            </div>
+
+            <div id="notMac" class="hidden">
+              <kbd class="notMac kbd kbd-sm bg-gray-500 text-gray-800 font-black">CTRL</kbd>
+              <kbd class="notMac kbd kbd-sm bg-gray-500 text-gray-800 font-black">SHIFT</kbd>
+              <kbd class="notMac kbd kbd-sm bg-gray-500 text-gray-800 font-black">K</kbd>
+            </div>
+            <nav class="w-72 px-4 hidden lg:block">
+              <ul class="flex justify-between">
+                <li>
+                  <a href="#">Notícias</a>
+                </li>
+                <li>
+                  <a href="#">Canais</a>
+                </li>
+                <li>
+                  <a href="#">Explorar</a>
+                </li>
+              </ul>
+            </nav>
+          </header>
+        {% endif %}
+        <div class="toast toast-end font-bold">
+          <div id="toast-message" class="hidden alert alert-success transition-all ease-in-out">
+            <span>Campo de Mensagem</span>
+          </div>
+        </div>
+        {% block content %}
+
+        {% endblock %}
+      </div>
+    </div>
+  </body>
+
+  <!-- Modal Profile Pic -->
+  <div id="modal" class="fixed inset-0 items-center justify-center hidden z-50">
+    <!-- Fundo escuro com blur -->
+    <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+    <div id="modalContent" class="z-50 bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
+        <legend class="fieldset-legend text-neutral-500">Selecione um arquivo</legend>
+        <form method="POST" class="flex gap-4" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ pic_form.profile_pic }}
+          <button class="btn py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm">Enviar</button>
+        </form>
+        <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
+      </fieldset>
+    </div>
+  </div>
+
+  <!-- Modal Cover Pic -->
+  <div id="modalCover" class="fixed inset-0 items-center justify-center hidden z-50">
+    <!-- Fundo escuro com blur -->
+    <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+    <div id="modalContent" class="z-50 bg-zinc-900 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <fieldset class="fieldset w-100 h-30 flex flex-col gap-4">
+        <legend class="fieldset-legend text-neutral-500">Selecione um arquivo</legend>
+        <form method="POST" class="flex gap-4" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ pic_form.cover_pic }}
+          <button class="btn py-1 px-8 font-bold cursor-pointer shadow-2xs rounded-sm">Enviar</button>
+        </form>
+        <label class="label"><span class="text-zinc-500">Max size 2MB</span></label>
+      </fieldset>
+    </div>
+  </div>
+
+  <!-- Modal Delete Post -->
+  <div id="modalDelete" class="fixed inset-0 items-center justify-center hidden z-50">
+    <!-- Fundo escuro com blur -->
+    <div class="absolute inset-0 bg-zinc-950/35 bg-opacity-30 backdrop-blur-xs"></div>
+    <div id="modalDeleteContent" class="flex flex-col gap-2 z-50 bg-zinc-900 p-6 text-white rounded-lg shadow-lg w-full max-w-md">
+      <h3 class="text-xl font-bold">Atenção</h3>
+      <h4>Deseja realmente excluir este post?</h4>
+      <p class="text-sm text-zinc-400 mb-4">O processo de exclusão é irreversível. Uma vez que o post tenha sido excluído não é possível recuperá-lo.</p>
+      <div class="flex w-full justify-between gap-2">
+        <a id="closeDeleteBtn" class="btn grow bg-gray-600 hover:bg-gray-600/80 text-white shadow-xs shadow-gray-700 border-gray-800">Não</a>
+        <a id="confirmDeleteBtn" class="btn grow bg-red-600 hover:bg-red-600/80 text-white shadow-xs shadow-red-700 border-red-800">Sim</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    const input = document.getElementById('search-input')
+    const clearBtn = document.getElementById('clear-btn')
+    
+    function toggleClearButton() {
+      clearBtn.style.display = input.value ? 'block' : 'none'
+    }
+    
+    function clearSearch() {
+      input.value = ''
+      toggleClearButton()
+      input.focus()
+    }
+    
+    // Chamada no carregamento da página (para exibir o X caso tenha valor vindo da URL)
+    window.onload = toggleClearButton
+  </script>
+  <script>
+    const profileModal = document.getElementById('profile_pic_update')
+    const fecharBtn = document.getElementById('fechar_profile_pic_modal')
+    
+    if (fecharBtn) {
+      fecharBtn.addEventListener('click', () => profileModal.close())
+    }
+    
+    // Função global para abrir o modal
+    window.abrirModalFotoPerfil = function () {
+      profileModal.showModal()
+    }
+  </script>
+  <script>
+    const followBtn = document.getElementsByClassName('follow-btn')
+    
+    for (let i = 0; i < followBtn.length; i++) {
+      followBtn[i].addEventListener('mouseenter', function () {
+        this.innerText = 'Cancelar'
+      })
+    
+      followBtn[i].addEventListener('mouseleave', function () {
+        this.innerText = 'Solicitado'
+      })
+    }
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const textarea = document.getElementById('post-input')
+      const form = textarea.closest('form')
+    
+      textarea.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+          e.preventDefault() // previne quebra de linha se necessário
+          form.querySelector('#send-button').click()
+        }
+      })
+    })
+  </script>
+
+  {% comment %} {% endcomment %}
+  {% if request.path == '/' %}
+    <script>
+      const postLength = document.getElementById('post-input')
+      const charsLeft = document.getElementById('chars-count')
+      const sendButton = document.getElementById('send-button')
+      
+      postLength.addEventListener('input', () => {
+        const inputLength = postLength.value.length
+        const charsRemaining = 255 - inputLength
+      
+        if (inputLength > 0) {
+          sendButton.disabled = false
+          sendButton.classList.remove('opacity-50')
+        } else {
+          sendButton.disabled = true
+          sendButton.classList.add('opacity-50')
+        }
+      
+        charsLeft.innerText = charsRemaining
+      
+        charsLeft.classList.remove('text-white', 'text-amber-300', 'text-red-400')
+      
+        if (charsRemaining <= 50) {
+          charsLeft.classList.add('text-red-400')
+        } else if (charsRemaining <= 150) {
+          charsLeft.classList.add('text-amber-300')
+        } else {
+          charsLeft.classList.add('text-white')
+        }
+      })
+      
+      const testClick = () => {
+        console.log('Testado e aprovado!')
+      }
+    </script>
+  {% endif %}
+
+  <script>
+    const inviteFriends = () => {
+      const texto = "Oi! Saca só esse rede social chamada 'SmallTalk'. Tô curtindo demais! → http://localhost:8000/welcome"
+      const toast = document.getElementById('toast-message')
+      navigator.clipboard
+        .writeText(texto)
+        .then(() => {
+          toast.innerText = 'Texto copiado com sucesso!'
+          toast.classList.remove('opacity-1', 'hidden')
+    
+          setTimeout(() => {
+            toast.classList.add('opacity-1')
+            setTimeout(() => {
+              toast.classList.add('hidden')
+            }, 499)
+          }, 2999)
+        })
+        .catch((err) => {
+          console.error('Erro ao copiar texto: ', err)
+        })
+    }
+  </script>
+  <script>
+    const blurOnClick = () => {
+      const el = document.activeElement
+      el?.blur()
+    }
+  </script>
+
+  <script>
+    const modalDelete = document.getElementById('modalDelete')
+    const modalDeleteContent = document.getElementById('modalDeleteContent')
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn')
+    const closeDeleteBtn = document.getElementById('closeDeleteBtn')
+    
+    // Seleciona todos os botões de deletar
+    const openBtns = document.querySelectorAll('.openModalDeleteBtn')
+    
+    openBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.activeElement.blur()
+    
+        const postId = btn.getAttribute('data-post-id')
+        // Monta a URL dinamicamente e injeta no botão "Sim"
+        confirmDeleteBtn.href = `/delete_post/${postId}` // ou use uma URL nomeada se preferir
+        // Exibe o modal
+        modalDelete.classList.add('flex')
+        modalDelete.classList.remove('hidden')
+      })
+    })
+    
+    closeDeleteBtn.addEventListener('click', (e) => {
+      modalDelete.classList.add('hidden')
+      modalDelete.classList.remove('flex')
+    })
+    
+    // Fechar modal ao clicar fora
+    modalDelete.addEventListener('click', (e) => {
+      if (!modalDeleteContent.contains(e.target)) {
+        modalDelete.classList.add('hidden')
+        modalDelete.classList.remove('flex')
+      }
+    })
+    
+    // Fechar com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modalDelete.classList.add('hidden')
+        modalDelete.classList.remove('flex')
+      }
+    })
+  </script>
+
+  {% if 'profile' in request.path or 'config' in request.path %}
+    <script>
+      const modal = document.getElementById('modal')
+      const openBtn = document.getElementById('openModal')
+      const modalContent = document.getElementById('modalContent')
+      
+      const modalCover = document.getElementById('modalCover')
+      const openCoverBtn = document.getElementById('openCoverModal')
+      const modalCoverContent = document.getElementById('modalCoverContent')
+      // Abrir modal
+      openBtn.addEventListener('click', () => {
+        modal.classList.add('flex')
+        modal.classList.remove('hidden')
+      })
+      
+      openCoverBtn.addEventListener('click', () => {
+        modalCover.classList.add('flex')
+        modalCover.classList.remove('hidden')
+      })
+      
+      // Fechar modal ao clicar fora do conteúdo
+      modal.addEventListener('click', (e) => {
+        if (!modalContent.contains(e.target)) {
+          modal.classList.add('hidden')
+          modal.classList.remove('flex')
+        }
+      })
+      
+      modalCover.addEventListener('click', (e) => {
+        if (!modalCoverContent.contains(e.target)) {
+          modalCover.classList.add('hidden')
+          modalCover.classList.remove('flex')
+        }
+      })
+      
+      // Fechar modal ao pressionar ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          modal.classList.add('hidden')
+          modal.classList.remove('flex')
+      
+          modalCover.classList.add('hidden')
+          modalCover.classList.remove('flex')
+        }
+      })
+    </script>
+  {% endif %}
+</html>
