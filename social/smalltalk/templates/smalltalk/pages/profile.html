@@ -35,7 +35,7 @@
           {% if profile_data.cover_pic %}
             <img src="{{ profile_data.cover_pic.url }}" class="rounded-t-xl min-h-[100px] max-h-[100px] md:min-h-[270px] md:max-h-[270px] min-w-full w-full max-w-full object-cover" alt="" />
           {% else %}
-            <img src="/static/smalltalk/cover_pics/pattern_template.png" class="rounded-t-xl h-[100px] md:h-[270px] min-w-full w-full object-cover" alt="" />
+            <img src="% static 'pattern_template.png' %" class="rounded-t-xl h-[100px] md:h-[270px] min-w-full w-full object-cover" alt="" />
           {% endif %}
           {% if user.username == slug %}
             <div class="flex items-center justify-center">
